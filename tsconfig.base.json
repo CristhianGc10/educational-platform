@@ -1,0 +1,50 @@
+ {
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "ES2020",
+    "module": "esnext",
+    "lib": ["ES2020", "dom", "dom.iterable"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "allowJs": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleDetection": "force",
+    "incremental": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@educational-platform/shared-ui": ["packages/shared-ui/src/index.ts"],
+      "@educational-platform/shared-types": ["packages/shared-types/src/index.ts"],
+      "@educational-platform/shared-utils": ["packages/shared-utils/src/index.ts"],
+      "@educational-platform/analytics-engine": ["packages/analytics-engine/src/index.ts"],
+      "@educational-platform/auth-system": ["packages/auth-system/src/index.ts"],
+      "@educational-platform/math-engine": ["packages/math-engine/src/index.ts"],
+      "@/components/*": ["apps/main-platform/src/components/*"],
+      "@/lib/*": ["apps/main-platform/src/lib/*"],
+      "@/styles/*": ["apps/main-platform/src/styles/*"],
+      "@/types/*": ["apps/main-platform/src/types/*"],
+      "@arithmetic/components/*": ["apps/course-arithmetic/src/shared/components/*"],
+      "@arithmetic/modules/*": ["apps/course-arithmetic/src/modules/*"],
+      "@arithmetic/shared/*": ["apps/course-arithmetic/src/shared/*"]
+    }
+  },
+  "exclude": ["node_modules", "tmp", "dist", ".next", "**/*.spec.ts", "**/*.test.ts"]
+}

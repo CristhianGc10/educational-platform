@@ -1,0 +1,78 @@
+{
+    "name": "educational-platform",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Plataforma educativa inmersiva para matemáticas con experiencias 3D interactivas",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/CristhianGc10/educational-platform.git"
+    },
+    "license": "MIT",
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ],
+    "scripts": {
+        "build": "nx run-many --target=build --all",
+        "dev": "nx run-many --target=dev --all --parallel",
+        "dev:main": "nx dev main-platform",
+        "dev:arithmetic": "nx dev course-arithmetic",
+        "test": "nx run-many --target=test --all",
+        "test:watch": "nx run-many --target=test --all --watch",
+        "test:coverage": "nx run-many --target=test --all --coverage",
+        "lint": "nx run-many --target=lint --all",
+        "lint:fix": "nx run-many --target=lint --all --fix",
+        "type-check": "nx run-many --target=type-check --all",
+        "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,css,scss}\"",
+        "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,css,scss}\"",
+        "clean": "nx reset && rm -rf node_modules && rm -rf dist",
+        "prepare": "husky install",
+        "postinstall": "nx run-many --target=postinstall --all"
+    },
+    "devDependencies": {
+        "@nx/devkit": "^17.2.8",
+        "@nx/eslint": "17.2.8",
+        "@nx/eslint-plugin": "17.2.8",
+        "@nx/js": "17.2.8",
+        "@nx/next": "17.2.8",
+        "@nx/react": "17.2.8",
+        "@nx/workspace": "17.2.8",
+        "@types/node": "^20.10.6",
+        "@typescript-eslint/eslint-plugin": "^6.18.1",
+        "@typescript-eslint/parser": "^6.18.1",
+        "eslint": "^8.56.0",
+        "eslint-config-next": "^14.0.4",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-import": "^2.29.1",
+        "eslint-plugin-jsx-a11y": "^6.8.0",
+        "eslint-plugin-react": "^7.33.2",
+        "eslint-plugin-react-hooks": "^4.6.0",
+        "husky": "^8.0.3",
+        "lint-staged": "^15.2.0",
+        "nx": "17.2.8",
+        "prettier": "^3.1.1",
+        "typescript": "^5.3.3"
+    },
+    "engines": {
+        "node": ">=18.0.0",
+        "npm": ">=9.0.0"
+    },
+    "lint-staged": {
+        "*.{ts,tsx,js,jsx}": [
+            "eslint --fix",
+            "prettier --write"
+        ],
+        "*.{json,md,css,scss}": [
+            "prettier --write"
+        ]
+    },
+    "keywords": [
+        "education",
+        "mathematics",
+        "interactive-learning",
+        "3d-visualization",
+        "nextjs",
+        "typescript",
+        "react-three-fiber"
+    ]
+}
