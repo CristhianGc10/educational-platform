@@ -1,0 +1,229 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// ===== USER MANAGEMENT =====
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  role      UserRole @default(STUDENT)
+  image     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  accounts Account[]
+  sessions Session[]
+  enrollments Enrollment[]
+  progress    Progress[]
+  exerciseAttempts ExerciseAttempt[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ===== COURSE STRUCTURE =====
+model Course {
+  id          String @id @default(cuid())
+  slug        String @unique // "arithmetic", "algebra"
+  title       String
+  description String
+  order       Int
+  isActive    Boolean @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  modules     Module[]
+  enrollments Enrollment[]
+
+  @@map("courses")
+}
+
+model Module {
+  id          String @id @default(cuid())
+  courseId    String
+  slug        String // "fundamentos-aplicados"
+  title       String
+  description String
+  order       Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  weeks  Week[]
+
+  @@unique([courseId, slug])
+  @@map("modules")
+}
+
+model Week {
+  id          String @id @default(cuid())
+  moduleId    String
+  slug        String // "semana-06-porcentajes-avanzados"
+  title       String
+  description String
+  order       Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  module Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  exercises Exercise[]
+  progress  Progress[]
+
+  @@unique([moduleId, slug])
+  @@map("weeks")
+}
+
+model Exercise {
+  id          String      @id @default(cuid())
+  weekId      String
+  slug        String      // "porcentaje-calculator-3d"
+  title       String
+  type        ExerciseType
+  difficulty  Difficulty
+  order       Int
+  content     String      // JSON content
+  solution    String      // JSON solution steps
+  hints       String      // JSON hints array
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // Relations
+  week Week @relation(fields: [weekId], references: [id], onDelete: Cascade)
+  attempts ExerciseAttempt[]
+
+  @@unique([weekId, slug])
+  @@map("exercises")
+}
+
+// ===== USER PROGRESS =====
+model Enrollment {
+  id         String   @id @default(cuid())
+  userId     String
+  courseId   String
+  enrolledAt DateTime @default(now())
+  completedAt DateTime?
+
+  // Relations
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@map("enrollments")
+}
+
+model Progress {
+  id            String        @id @default(cuid())
+  userId        String
+  weekId        String
+  status        ProgressStatus @default(NOT_STARTED)
+  masteryLevel  Int           @default(0) // 0-4 scale
+  timeSpent     Int           @default(0) // in seconds
+  lastAccessed  DateTime?
+  completedAt   DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  week Week @relation(fields: [weekId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, weekId])
+  @@map("progress")
+}
+
+model ExerciseAttempt {
+  id            String   @id @default(cuid())
+  userId        String
+  exerciseId    String
+  attemptNumber Int
+  userAnswer    String   // JSON user input
+  isCorrect     Boolean
+  timeSpent     Int      // in seconds
+  hintsUsed     Int      @default(0)
+  createdAt     DateTime @default(now())
+
+  // Relations
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercise Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+
+  @@map("exercise_attempts")
+}
+
+// ===== ENUMS =====
+enum UserRole {
+  STUDENT
+  TEACHER
+  ADMIN
+}
+
+enum ExerciseType {
+  CALCULATOR_3D
+  PROBLEM_SOLVING
+  CONCEPTUAL
+  INTERACTIVE_SIMULATION
+}
+
+enum Difficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum ProgressStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+  MASTERED
+}

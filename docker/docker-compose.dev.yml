@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+    postgres:
+        image: postgres:15
+        container_name: educational_platform_db
+        restart: always
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: password
+            POSTGRES_DB: educational_platform_dev
+        ports:
+            - '5432:5432'
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+            - ./docker/init-scripts:/docker-entrypoint-initdb.d
+        networks:
+            - educational_network
+
+    # Redis para caché (preparado para más adelante)
+    redis:
+        image: redis:7-alpine
+        container_name: educational_platform_redis
+        restart: always
+        ports:
+            - '6379:6379'
+        volumes:
+            - redis_data:/data
+        networks:
+            - educational_network
+
+volumes:
+    postgres_data:
+    redis_data:
+
+networks:
+    educational_network:
+        driver: bridge

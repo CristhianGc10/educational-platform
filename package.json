@@ -27,7 +27,17 @@
         "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,css,scss}\"",
         "clean": "nx reset && rm -rf node_modules && rm -rf dist",
         "prepare": "husky install",
-        "postinstall": "nx run-many --target=postinstall --all"
+        "postinstall": "nx run-many --target=postinstall --all",
+        "db:up": "docker compose -f docker-compose.dev.yml up -d",
+        "db:down": "docker compose -f docker-compose.dev.yml down",
+        "db:reset": "docker compose -f docker-compose.dev.yml down -v && docker compose -f docker-compose.dev.yml up -d",
+        "db:generate": "prisma generate",
+        "db:migrate": "prisma migrate dev",
+        "db:studio": "prisma studio",
+        "db:seed": "tsx prisma/seed.ts",
+        "db:reset-hard": "prisma migrate reset --force",
+        "db:test": "tsx scripts/test-db-connection.ts",
+        "db:verify": "tsx scripts/verify-complete-schema.ts"
     },
     "devDependencies": {
         "@nx/devkit": "^17.2.8",
@@ -51,7 +61,8 @@
         "lint-staged": "^15.2.0",
         "nx": "17.2.8",
         "prettier": "^3.1.1",
-        "typescript": "^5.3.3"
+        "typescript": "^5.3.3",
+        "tsx": "^4.7.0"
     },
     "engines": {
         "node": ">=18.0.0",
@@ -74,5 +85,9 @@
         "nextjs",
         "typescript",
         "react-three-fiber"
-    ]
+    ],
+    "dependencies": {
+        "@prisma/client": "^6.9.0",
+        "prisma": "^6.9.0"
+    }
 }

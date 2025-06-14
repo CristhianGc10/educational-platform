@@ -1,20 +1,25 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "outDir": "dist",
-    "declaration": true,
-    "declarationMap": true,
-    "jsx": "react-jsx"
-  },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "**/*.test.ts",
-    "**/*.test.tsx",
-    "**/*.spec.ts",
-    "**/*.spec.tsx"
-  ]
+    "name": "@educational-platform/shared-ui",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Sistema de diseño compartido con componentes base",
+    "main": "src/index.ts",
+    "types": "src/index.ts",
+    "dependencies": {
+        "class-variance-authority": "^0.7.1",
+        "clsx": "^2.1.1",
+        "lucide-react": "^0.302.0",
+        "react": ">=18.0.0",
+        "react-dom": ">=18.0.0",
+        "tailwind-merge": "^2.6.0"
+    },
+    "devDependencies": {
+        "@types/react": "^18.2.45",
+        "@types/react-dom": "^18.2.18",
+        "typescript": "^5.3.3"
+    },
+    "peerDependencies": {
+        "react": ">=18.0.0",
+        "react-dom": ">=18.0.0"
+    }
 }
