@@ -1,0 +1,51 @@
+{
+    "name": "course-arithmetic",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "apps/course-arithmetic/src",
+    "projectType": "application",
+    "targets": {
+        "build": {
+            "executor": "@nx/next:build",
+            "outputs": ["{options.outputPath}"],
+            "defaultConfiguration": "production",
+            "options": {
+                "root": "apps/course-arithmetic",
+                "outputPath": "dist/apps/course-arithmetic"
+            }
+        },
+        "serve": {
+            "executor": "@nx/next:dev",
+            "defaultConfiguration": "development",
+            "options": {
+                "buildTarget": "course-arithmetic:build",
+                "dev": true,
+                "port": 3001
+            }
+        },
+        "start": {
+            "executor": "@nx/next:server",
+            "defaultConfiguration": "production",
+            "options": {
+                "buildTarget": "course-arithmetic:build:production",
+                "port": 3001
+            }
+        },
+        "lint": {
+            "executor": "@nx/linter:eslint",
+            "outputs": ["{options.outputFile}"],
+            "options": {
+                "lintFilePatterns": [
+                    "apps/course-arithmetic/**/*.{ts,tsx,js,jsx}"
+                ]
+            }
+        },
+        "type-check": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "tsc --noEmit",
+                "cwd": "apps/course-arithmetic"
+            }
+        }
+    },
+    "tags": []
+}

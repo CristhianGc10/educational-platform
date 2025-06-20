@@ -1,0 +1,12 @@
+{
+    "problems": [
+        {
+            "id": "p1_1",
+            "title": "Análisis de Estructura Familiar",
+            "description": "Identifica los diferentes roles en la familia García",
+            "difficulty": "easy",
+            "expectedPatterns": ["family_tree"],
+            "hints": ["Observa las edades", "Busca relaciones jerárquicas"]
+        }
+    ]
+}

@@ -1,1 +1,190 @@
- 
+{
+    "module": "finanzas-comercio",
+    "week": "semana-06-porcentajes-avanzados",
+    "title": "Porcentajes Avanzados en Finanzas y Comercio",
+    "description": "Aplica porcentajes en contextos comerciales reales: descuentos, aumentos, impuestos y comisiones.",
+    "estimatedTime": "45-60 minutos",
+    "difficulty": "intermedio",
+    "prerequisites": [
+        "operaciones-basicas",
+        "fracciones-decimales",
+        "porcentajes-basicos"
+    ],
+    "learningObjectives": [
+        "Calcular descuentos comerciales con precisión",
+        "Determinar aumentos de precios y su impacto",
+        "Aplicar porcentajes en contextos fiscales (IVA, impuestos)",
+        "Resolver problemas de comisiones de ventas",
+        "Analizar situaciones financieras complejas"
+    ],
+    "exercises": [
+        {
+            "id": "comercio_descuento_1",
+            "type": "discount",
+            "difficulty": "básico",
+            "points": 10,
+            "context": "Una tienda de ropa ofrece un descuento del 25% en todos los productos. Un cliente quiere comprar una chaqueta que originalmente cuesta $120.",
+            "originalValue": 120,
+            "percentage": 25,
+            "question": "¿Cuánto pagará el cliente por la chaqueta con el descuento aplicado?",
+            "correctAnswer": 90,
+            "tolerance": 0.01,
+            "formula": "Precio final = Precio original - (Precio original × Porcentaje descuento)",
+            "explanation": "Para calcular un descuento, multiplicamos el precio original por el porcentaje de descuento y lo restamos del precio original.",
+            "realWorldConnection": "Los descuentos comerciales son estrategias de marketing para atraer clientes y aumentar ventas.",
+            "hints": [
+                "Recuerda: descuento significa restar el porcentaje del precio original.",
+                "Calcula primero cuánto es el 25% de $120: 120 × 0.25 = $30",
+                "Luego resta ese valor del precio original: $120 - $30 = $90"
+            ],
+            "commonErrors": [
+                {
+                    "error": "Sumar en lugar de restar",
+                    "explanation": "Un descuento reduce el precio, no lo aumenta."
+                },
+                {
+                    "error": "Calcular solo el descuento",
+                    "explanation": "La pregunta pide el precio final, no solo el descuento."
+                }
+            ]
+        },
+        {
+            "id": "comercio_aumento_1",
+            "type": "increase",
+            "difficulty": "medio",
+            "points": 15,
+            "context": "Una empresa de telecomunicaciones aumenta sus tarifas en un 15% debido a la inflación. Si el plan actual cuesta $45 mensuales.",
+            "originalValue": 45,
+            "percentage": 15,
+            "question": "¿Cuál será el nuevo precio mensual del plan?",
+            "correctAnswer": 51.75,
+            "tolerance": 0.01,
+            "formula": "Precio nuevo = Precio original + (Precio original × Porcentaje aumento)",
+            "explanation": "Los aumentos de precios se calculan sumando el porcentaje de aumento al precio original.",
+            "realWorldConnection": "La inflación afecta los precios de servicios y productos, requiriendo ajustes periódicos.",
+            "hints": [
+                "Un aumento significa sumar el porcentaje al precio original.",
+                "Calcula el 15% de $45: 45 × 0.15 = $6.75",
+                "Suma este valor al precio original: $45 + $6.75 = $51.75"
+            ],
+            "commonErrors": [
+                {
+                    "error": "Restar en lugar de sumar",
+                    "explanation": "Un aumento incrementa el precio, no lo reduce."
+                },
+                {
+                    "error": "Usar el porcentaje como valor absoluto",
+                    "explanation": "El 15% debe convertirse a decimal (0.15) para el cálculo."
+                }
+            ]
+        },
+        {
+            "id": "impuesto_iva_1",
+            "type": "tax",
+            "difficulty": "medio",
+            "points": 15,
+            "context": "Un producto tiene un precio base de $85 y se le debe aplicar un IVA del 19% para obtener el precio final de venta.",
+            "originalValue": 85,
+            "percentage": 19,
+            "question": "¿Cuál es el precio final que debe pagar el consumidor?",
+            "correctAnswer": 101.15,
+            "tolerance": 0.01,
+            "formula": "Precio con IVA = Precio base + (Precio base × Porcentaje IVA)",
+            "explanation": "El IVA (Impuesto al Valor Agregado) se suma al precio base para obtener el precio final.",
+            "realWorldConnection": "El IVA es un impuesto común en muchos países que los consumidores pagan en sus compras.",
+            "hints": [
+                "El IVA se suma al precio base del producto.",
+                "Calcula el 19% de $85: 85 × 0.19 = $16.15",
+                "Suma el IVA al precio base: $85 + $16.15 = $101.15"
+            ],
+            "commonErrors": [
+                {
+                    "error": "Confundir precio base con precio final",
+                    "explanation": "El precio base no incluye impuestos, el precio final sí."
+                },
+                {
+                    "error": "Aplicar descuento en lugar de aumento",
+                    "explanation": "Los impuestos aumentan el precio, no lo reducen."
+                }
+            ]
+        },
+        {
+            "id": "comision_ventas_1",
+            "type": "commission",
+            "difficulty": "avanzado",
+            "points": 20,
+            "context": "Un vendedor de autos recibe una comisión del 8% sobre cada venta. Este mes vendió un auto por $25,000.",
+            "originalValue": 25000,
+            "percentage": 8,
+            "question": "¿Cuánto dinero recibió de comisión por esta venta?",
+            "correctAnswer": 2000,
+            "tolerance": 0.01,
+            "formula": "Comisión = Valor de venta × Porcentaje de comisión",
+            "explanation": "Las comisiones son pagos basados en un porcentaje de las ventas realizadas.",
+            "realWorldConnection": "Muchos trabajos de ventas incluyen comisiones como incentivo para aumentar el rendimiento.",
+            "hints": [
+                "La comisión es un porcentaje del valor total de la venta.",
+                "Calcula el 8% de $25,000: 25,000 × 0.08 = $2,000",
+                "Esta es la comisión que recibe el vendedor."
+            ],
+            "commonErrors": [
+                {
+                    "error": "Confundir comisión con precio de venta",
+                    "explanation": "La comisión es solo un porcentaje, no el precio total."
+                },
+                {
+                    "error": "Usar porcentaje incorrecto",
+                    "explanation": "Verificar que se use el porcentaje correcto de comisión."
+                }
+            ]
+        },
+        {
+            "id": "descuento_multiple_1",
+            "type": "discount",
+            "difficulty": "avanzado",
+            "points": 25,
+            "context": "Una tienda aplica primero un descuento del 20% y luego un descuento adicional del 10% sobre el precio ya descontado. El precio original es $200.",
+            "originalValue": 200,
+            "percentage": 28,
+            "question": "¿Cuál es el precio final después de ambos descuentos?",
+            "correctAnswer": 144,
+            "tolerance": 0.01,
+            "formula": "Descuentos sucesivos no se suman directamente",
+            "explanation": "Los descuentos sucesivos se aplican uno después del otro, no se suman los porcentajes.",
+            "realWorldConnection": "Las promociones comerciales a menudo incluyen descuentos múltiples para atraer clientes.",
+            "hints": [
+                "Se aplican descuentos sucesivos, no se suman los porcentajes.",
+                "Primer descuento: $200 - (20% de $200) = $200 - $40 = $160",
+                "Segundo descuento: $160 - (10% de $160) = $160 - $16 = $144"
+            ],
+            "commonErrors": [
+                {
+                    "error": "Sumar los porcentajes (20% + 10% = 30%)",
+                    "explanation": "Los descuentos sucesivos no se suman directamente."
+                },
+                {
+                    "error": "Aplicar ambos descuentos al precio original",
+                    "explanation": "El segundo descuento se aplica al precio ya descontado."
+                }
+            ]
+        }
+    ],
+    "assessmentCriteria": {
+        "mastery": {
+            "threshold": 80,
+            "description": "Dominio completo de porcentajes en contextos comerciales"
+        },
+        "proficient": {
+            "threshold": 70,
+            "description": "Buen manejo de la mayoría de conceptos"
+        },
+        "developing": {
+            "threshold": 60,
+            "description": "Comprensión básica que requiere refuerzo"
+        },
+        "novice": {
+            "threshold": 0,
+            "description": "Necesita apoyo significativo"
+        }
+    }
+}

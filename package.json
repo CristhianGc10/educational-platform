@@ -14,9 +14,9 @@
     ],
     "scripts": {
         "build": "nx run-many --target=build --all",
-        "dev": "nx run-many --target=dev --all --parallel",
-        "dev:main": "nx dev main-platform",
-        "dev:arithmetic": "nx dev course-arithmetic",
+        "dev": "nx run-many --target=serve --all --parallel",
+        "dev:main": "nx serve main-platform",
+        "dev:arithmetic": "nx serve course-arithmetic",
         "test": "nx run-many --target=test --all",
         "test:watch": "nx run-many --target=test --all --watch",
         "test:coverage": "nx run-many --target=test --all --coverage",
@@ -25,7 +25,7 @@
         "type-check": "nx run-many --target=type-check --all",
         "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,css,scss}\"",
         "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,css,scss}\"",
-        "clean": "nx reset && rm -rf node_modules && rm -rf dist",
+        "clean": "nx reset && rmdir /s /q node_modules && rmdir /s /q dist",
         "prepare": "husky install",
         "postinstall": "nx run-many --target=postinstall --all",
         "db:up": "docker compose -f docker-compose.dev.yml up -d",
@@ -48,6 +48,7 @@
         "@nx/react": "17.2.8",
         "@nx/workspace": "17.2.8",
         "@types/node": "^20.10.6",
+        "@types/three": "^0.177.0",
         "@typescript-eslint/eslint-plugin": "^6.18.1",
         "@typescript-eslint/parser": "^6.18.1",
         "eslint": "^8.56.0",
@@ -61,8 +62,8 @@
         "lint-staged": "^15.2.0",
         "nx": "17.2.8",
         "prettier": "^3.1.1",
-        "typescript": "^5.3.3",
-        "tsx": "^4.7.0"
+        "tsx": "^4.7.0",
+        "typescript": "^5.3.3"
     },
     "engines": {
         "node": ">=18.0.0",
@@ -88,6 +89,14 @@
     ],
     "dependencies": {
         "@prisma/client": "^6.9.0",
-        "prisma": "^6.9.0"
+        "@react-three/drei": "^10.3.0",
+        "@react-three/fiber": "^9.1.2",
+        "@types/uuid": "^10.0.0",
+        "framer-motion": "^12.18.1",
+        "lucide-react": "^0.515.0",
+        "motion": "^12.18.1",
+        "prisma": "^6.9.0",
+        "three": "^0.177.0",
+        "uuid": "^11.1.0"
     }
 }

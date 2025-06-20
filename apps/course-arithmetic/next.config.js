@@ -1,17 +1,15 @@
 /** @type {import('next').NextConfig} */
-const { composePlugins, withNx } = require('@nx/next');
-
 const nextConfig = {
-    transpilePackages: ['@educational-platform/shared-ui'],
-    reactStrictMode: true,
-    swcMinify: true,
-    compiler: {
-        styledComponents: false,
-    },
-    experimental: {
-        optimizePackageImports: [],
-    },
-};
+  transpilePackages: ['@educational-platform/shared-ui'],
+  experimental: {
+    esmExternals: false
+  },
+  typescript: {
+    ignoreBuildErrors: false
+  },
+  eslint: {
+    ignoreDuringBuilds: false
+  }
+}
 
-const plugins = [withNx];
-module.exports = composePlugins(...plugins)(nextConfig);
+module.exports = nextConfig

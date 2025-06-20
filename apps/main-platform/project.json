@@ -1,0 +1,49 @@
+{
+    "name": "main-platform",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "apps/main-platform/src",
+    "projectType": "application",
+    "targets": {
+        "build": {
+            "executor": "@nx/next:build",
+            "outputs": ["{options.outputPath}"],
+            "defaultConfiguration": "production",
+            "options": {
+                "root": "apps/main-platform",
+                "outputPath": "dist/apps/main-platform"
+            }
+        },
+        "serve": {
+            "executor": "@nx/next:dev",
+            "defaultConfiguration": "development",
+            "options": {
+                "buildTarget": "main-platform:build",
+                "dev": true,
+                "port": 3000
+            }
+        },
+        "start": {
+            "executor": "@nx/next:server",
+            "defaultConfiguration": "production",
+            "options": {
+                "buildTarget": "main-platform:build:production",
+                "port": 3000
+            }
+        },
+        "lint": {
+            "executor": "@nx/linter:eslint",
+            "outputs": ["{options.outputFile}"],
+            "options": {
+                "lintFilePatterns": ["apps/main-platform/**/*.{ts,tsx,js,jsx}"]
+            }
+        },
+        "type-check": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "tsc --noEmit",
+                "cwd": "apps/main-platform"
+            }
+        }
+    },
+    "tags": []
+}
