@@ -1,10 +1,1 @@
-{
-    "templates": [
-        {
-            "id": "t4_1",
-            "title": "Optimización de Comunicación",
-            "description": "Mejora la eficiencia de comunicación en redes relacionales",
-            "complexity": "advanced"
-        }
-    ]
-}
+{ "templates": [] }

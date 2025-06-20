@@ -1,11 +1,1 @@
-{
-    "scenarios": [
-        {
-            "id": "s3_1",
-            "title": "Empresa TechCorp",
-            "description": "Aplica tu algoritmo a una estructura organizacional",
-            "difficulty": "hard",
-            "context": "business"
-        }
-    ]
-}
+{ "scenarios": [] }

@@ -1,11 +1,1 @@
-{
-    "challenges": [
-        {
-            "id": "c2_1",
-            "title": "Constructor de Algoritmos Relacionales",
-            "description": "Crea un algoritmo que identifique automáticamente roles familiares",
-            "difficulty": "medium",
-            "requiredBlocks": ["input", "process", "condition", "output"]
-        }
-    ]
-}
+{ "challenges": [] }
