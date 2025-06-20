@@ -8,11 +8,12 @@ export {
     LAB_CONFIG,
     ACHIEVEMENTS_CONFIG,
     validateConfig,
+    ALL_FAMILIES,
+    AVAILABLE_BLOCKS,
 } from './config/lab-config';
 
 // ================= DATOS =================
 export {
-    ALL_FAMILIES,
     COMPLEX_FAMILIES,
     getFamiliesByComplexity,
     getRandomFamily,
@@ -20,7 +21,6 @@ export {
 } from './data/familyDatasets';
 
 export {
-    AVAILABLE_BLOCKS,
     ALGORITHM_TEMPLATES,
     BLOCK_CATEGORIES,
     getBlocksByCategory,
@@ -42,9 +42,12 @@ export type {
     Person,
     Relationship,
     Family,
+    FamilyDataset,
+    FamilyMember,
 
     // Patrones y análisis
     Pattern,
+    DiscoveredPattern,
     Hypothesis,
     Discovery,
 
@@ -60,22 +63,21 @@ export type {
     Achievement,
     LabState,
 
-    // Algoritmos
-    AlgorithmBlock,
+    // Algoritmos de relationships
+    AlgorithmBlock as RelationshipAlgorithmBlock,
     BlockInput,
     BlockOutput,
     BlockParameter,
     BlockConnection,
-    ConstructedAlgorithm,
+    ConstructedAlgorithm as RelationshipConstructedAlgorithm,
     AlgorithmTemplate,
-    ValidationResult,
 
-    // Sistemas
+    // Sistemas de relationships
     SystemDefinition,
-    SystemEntity,
-    OptimizationProblem,
-    OptimizationResult,
-    SystemImprovement,
+    SystemEntity as RelationshipSystemEntity,
+    SystemRelationship,
+    SystemObjective,
+    SystemConstraint,
 
     // Props de componentes
     FamilyScene3DProps,
@@ -111,9 +113,30 @@ export type {
 
 // ================= TIPOS - SYSTEMS =================
 export type {
-    SystemComponent,
-    SystemMetrics,
-    OptimizationStrategy,
+    SystemEntity,
+    SystemMetric,
+    SystemConnection,
+    SystemOptimization,
+    SystemAnalysis,
+    SystemSimulation,
+    SystemOptimizerState,
+    UseSystemOptimizerReturn,
+    OptimizationProblem,
+    OptimizationResult,
+    OptimizationVariable,
+    OptimizationObjective,
+    OptimizationConstraint,
+    OptimizationConfig,
+    OptimizationMethod,
+    ExecutionEnvironment,
+    VariableResult,
+    ConstraintResult,
+    ResultMetadata,
+    Benchmark,
+    BenchmarkResult,
+    ComparisonMetric,
+    RobustnessAnalysis,
+    Tradeoff,
 } from './types/systems';
 
 // ================= CONFIGURACIÓN POR DEFECTO =================
@@ -146,7 +169,7 @@ export function validateLabSetup(): boolean {
 /**
  * Obtiene la configuración para una familia específica
  */
-export function getFamilyConfig(familyId: string): Family | undefined {
+export function getFamilyConfig(familyId: string): FamilyDataset | undefined {
     return ALL_FAMILIES.find((family) => family.id === familyId);
 }
 
@@ -156,7 +179,7 @@ export function getFamilyConfig(familyId: string): Family | undefined {
 export function getRecommendedFamilies(
     difficulty: 1 | 2 | 3 | 4 | 5,
     limit: number = 5
-): Family[] {
+): FamilyDataset[] {
     return getFamiliesByComplexity(difficulty).slice(0, limit);
 }
 
@@ -198,39 +221,39 @@ export function calculatePhaseProgress(
 /**
  * Genera un ID único para eventos
  */
-export function generateEventId(prefix: string = 'event'): string {
-    return `${prefix}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+export function generateEventId(): string {
+    return `event_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 }
 
 // ================= INFORMACIÓN DEL MÓDULO =================
 export const moduleInfo = {
-    id: 'semana-01-operaciones-basicas',
-    title: 'Operaciones Básicas y Sistemas Relacionales',
+    id: 'fundamentos-aplicados-semana-01',
+    title: 'Sistemas Relacionales y Operaciones Básicas',
     version: '1.0.0',
     description:
-        'Laboratorio interactivo para explorar relaciones familiares y construir algoritmos de análisis',
-    estimatedDuration: LAB_CONFIG.estimatedDuration,
-    difficulty: 3,
-    prerequisites: [],
+        'Laboratorio interactivo para explorar relaciones familiares y construir algoritmos',
+    author: 'Equipo Educativo',
+    lastUpdated: new Date('2024-01-15'),
+    estimatedDuration: 90, // minutos
+    difficulty: 'intermediate',
+    prerequisites: ['arithmetic-basics', 'logical-thinking'],
     learningObjectives: [
-        'Identificar y analizar patrones en sistemas relacionales complejos',
-        'Construir algoritmos básicos para el análisis de datos relacionales',
-        'Aplicar conocimientos de sistemas relacionales a contextos del mundo real',
-        'Desarrollar pensamiento sistémico y habilidades de resolución de problemas',
+        'Identificar patrones en estructuras relacionales',
+        'Construir algoritmos básicos paso a paso',
+        'Aplicar optimización a problemas reales',
+        'Desarrollar pensamiento sistémico',
     ],
-    technologies: [
-        'React',
-        'TypeScript',
-        'React-Three-Fiber',
-        'Framer Motion',
-        'TailwindCSS',
+    skills: [
+        'pattern-recognition',
+        'algorithmic-thinking',
+        'system-optimization',
     ],
-    features: [
-        'Visualización 3D interactiva',
-        'Constructor de algoritmos visual',
-        'Sistema de progreso gamificado',
-        'Análisis en tiempo real',
-        'Simulaciones empresariales',
+    tags: [
+        'relationships',
+        'algorithms',
+        'systems',
+        'optimization',
+        'family-structures',
     ],
 };
 

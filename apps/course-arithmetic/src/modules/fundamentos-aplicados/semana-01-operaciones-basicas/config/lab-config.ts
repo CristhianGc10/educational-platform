@@ -1,239 +1,254 @@
-// config/lab-config.ts
+// ============================================================================
+// CONFIGURACIÓN DEL LABORATORIO - ARCHIVO COMPLETO
+// ============================================================================
 
-import { PhaseConfig, PhaseUnlockCriteria } from '../types/phases';
+import { Achievement } from '../types/relationships';
+import { PhaseConfig } from '../types/phases';
 
-import { BlockCategory } from '../types/algorithms';
+// ============================================================================
+// CONFIGURACIÓN PRINCIPAL DEL LABORATORIO
+// ============================================================================
 
 export const LAB_CONFIG = {
-    id: 'sistemas-relacionales-lab',
-    title: 'Laboratorio de Sistemas Relacionales',
-    description:
-        'Exploración interactiva de patrones matemáticos en sistemas familiares',
+    // Información básica
+    id: 'fundamentos-aplicados-lab',
+    name: 'Laboratorio de Fundamentos Aplicados',
     version: '1.0.0',
-    totalDuration: 120, // minutes
-    difficultyLevel: 'intermediate',
-    prerequisites: [
-        'Operaciones básicas',
-        'Comprensión de relaciones',
-        'Pensamiento lógico',
-    ],
-    learningObjectives: [
-        'Identificar patrones en datos relacionales',
-        'Formular y probar hipótesis matemáticas',
-        'Construir algoritmos para resolver problemas',
-        'Aplicar conceptos a escenarios empresariales',
-        'Innovar soluciones originales',
-    ],
-    assessment: {
-        type: 'formative',
-        criteria: [
-            'Comprensión conceptual',
-            'Aplicación práctica',
-            'Pensamiento crítico',
-            'Creatividad',
-            'Colaboración',
-        ],
-        passingScore: 70,
-    },
-};
 
-export const PHASE_CONFIGS: PhaseConfig[] = [
-    {
-        id: 'phase-1-discovery',
-        title: 'Fase 1: Descubrimiento de Patrones',
-        description: 'Explora familias y descubre patrones matemáticos ocultos',
-        objectives: [
-            'Explorar al menos 6 familias diferentes',
-            'Descubrir 3 patrones matemáticos únicos',
-            'Formular y probar 2 hipótesis',
-            'Alcanzar 85% de precisión en predicciones',
-        ],
-        duration: 25,
-        order: 1,
-        prerequisites: [],
-        unlockCriteria: {
-            minimumScore: 0,
-            requiredTasks: [],
-            timeSpent: 0,
-            conceptsLearned: [],
+    // Duración estimada
+    estimatedDuration: 120, // minutos
+
+    // Número de fases
+    totalPhases: 4,
+
+    // Configuración de dificultad
+    difficulty: {
+        beginner: {
+            familiesRequired: 2,
+            patternsRequired: 1,
+            hypothesesRequired: 1,
+            accuracyThreshold: 70,
+            timeLimit: 40,
+            hintsAvailable: 5,
         },
-        resources: [
-            {
-                id: 'intro-video',
-                type: 'video',
-                title: 'Introducción a Sistemas Relacionales',
-                url: '/resources/intro-sistemas-relacionales.mp4',
-                duration: 3,
-                optional: false,
-            },
-            {
-                id: 'pattern-guide',
-                type: 'document',
-                title: 'Guía de Identificación de Patrones',
-                url: '/resources/pattern-identification-guide.pdf',
-                optional: true,
-            },
-        ],
+        intermediate: {
+            familiesRequired: 4,
+            patternsRequired: 2,
+            hypothesesRequired: 2,
+            accuracyThreshold: 80,
+            timeLimit: 30,
+            hintsAvailable: 3,
+        },
+        advanced: {
+            familiesRequired: 6,
+            patternsRequired: 3,
+            hypothesesRequired: 3,
+            accuracyThreshold: 90,
+            timeLimit: 20,
+            hintsAvailable: 1,
+        },
+    },
+
+    // Pesos para el sistema de puntuación
+    scoringWeights: {
+        exploration: 0.25,
+        discovery: 0.3,
+        hypothesis: 0.25,
+        efficiency: 0.2,
+    },
+
+    // Configuración de progreso
+    progress: {
+        autoSave: true,
+        saveInterval: 30000, // 30 segundos
+        enableBackup: true,
+        maxAttempts: 3,
+    },
+
+    // Configuración de validación
+    validation: {
+        enableRealTime: true,
+        strictMode: false,
+        showWarnings: true,
+        showSuggestions: true,
+    },
+
+    // Límites del sistema
+    limits: {
+        maxFamilies: 10,
+        maxPatterns: 20,
+        maxHypotheses: 15,
+        maxAlgorithms: 8,
+        maxTimePerPhase: 45, // minutos
+    },
+} as const;
+
+// ============================================================================
+// CONFIGURACIÓN DE LOGROS
+// ============================================================================
+
+export const ACHIEVEMENTS_CONFIG: Achievement[] = [
+    {
+        id: 'first-pattern',
+        title: 'Primer Descubrimiento',
+        description: 'Descubre tu primer patrón matemático',
+        icon: 'Search',
+        rarity: 'common',
+        points: 100,
+        criteria: { patternsDiscovered: 1 },
+        category: 'discovery',
     },
     {
-        id: 'phase-2-construction',
-        title: 'Fase 2: Construcción de Algoritmos',
-        description:
-            'Construye algoritmos para automatizar el descubrimiento de patrones',
-        objectives: [
-            'Completar 4 desafíos algorítmicos',
-            'Crear algoritmo con eficiencia >80%',
-            'Usar máximo 15 bloques de código',
-            'Documentar solución claramente',
-        ],
-        duration: 35,
-        order: 2,
-        prerequisites: ['phase-1-discovery'],
-        unlockCriteria: {
-            minimumScore: 75,
-            requiredTasks: [
-                'explore-families',
-                'discover-patterns',
-                'test-hypotheses',
-            ],
-            timeSpent: 15,
-            conceptsLearned: ['pattern-recognition', 'hypothesis-testing'],
-        },
-        resources: [
-            {
-                id: 'algorithm-basics',
-                type: 'interactive',
-                title: 'Fundamentos de Algoritmos',
-                url: '/resources/algorithm-basics-interactive',
-                duration: 10,
-                optional: false,
-            },
-        ],
+        id: 'pattern-master',
+        title: 'Maestro de Patrones',
+        description: 'Descubre 5 patrones diferentes',
+        icon: 'Target',
+        rarity: 'uncommon',
+        points: 250,
+        criteria: { patternsDiscovered: 5 },
+        category: 'discovery',
     },
     {
-        id: 'phase-3-application',
-        title: 'Fase 3: Aplicación Empresarial',
-        description: 'Aplica conceptos a escenarios empresariales reales',
-        objectives: [
-            'Resolver 2 casos empresariales',
-            'Optimizar sistema con >25% mejora',
-            'Satisfacer a 3+ stakeholders',
-            'Crear plan de implementación viable',
-        ],
-        duration: 40,
-        order: 3,
-        prerequisites: ['phase-2-construction'],
-        unlockCriteria: {
-            minimumScore: 80,
-            requiredTasks: ['complete-algorithms', 'validate-solutions'],
-            timeSpent: 25,
-            conceptsLearned: ['algorithmic-thinking', 'optimization'],
-        },
-        resources: [
-            {
-                id: 'business-cases',
-                type: 'document',
-                title: 'Casos de Estudio Empresariales',
-                url: '/resources/business-cases.pdf',
-                optional: false,
-            },
-        ],
+        id: 'hypothesis-expert',
+        title: 'Experto en Hipótesis',
+        description: 'Crea y prueba 3 hipótesis exitosamente',
+        icon: 'Lightbulb',
+        rarity: 'rare',
+        points: 500,
+        criteria: { hypothesesTested: 3, successRate: 80 },
+        category: 'creation',
     },
     {
-        id: 'phase-4-innovation',
-        title: 'Fase 4: Innovación y Creatividad',
-        description:
-            'Desarrolla soluciones innovadoras y presenta ideas originales',
-        objectives: [
-            'Desarrollar proyecto innovador',
-            'Obtener rating >4.0 de pares',
-            'Demostrar originalidad >75%',
-            'Presentar solución efectivamente',
-        ],
-        duration: 20,
-        order: 4,
-        prerequisites: ['phase-3-application'],
-        unlockCriteria: {
-            minimumScore: 85,
-            requiredTasks: ['solve-business-cases', 'optimize-systems'],
-            timeSpent: 45,
-            conceptsLearned: ['systems-thinking', 'business-application'],
-        },
-        resources: [
-            {
-                id: 'innovation-methods',
-                type: 'reference',
-                title: 'Métodos de Innovación',
-                url: '/resources/innovation-methods-reference',
-                optional: true,
-            },
-        ],
+        id: 'speed-explorer',
+        title: 'Explorador Veloz',
+        description: 'Completa la fase 1 en menos de 15 minutos',
+        icon: 'Zap',
+        rarity: 'uncommon',
+        points: 300,
+        criteria: { phase1Time: 900 }, // 15 minutos en segundos
+        category: 'mastery',
+    },
+    {
+        id: 'family-expert',
+        title: 'Experto Familiar',
+        description: 'Analiza todas las familias disponibles',
+        icon: 'Users',
+        rarity: 'rare',
+        points: 400,
+        criteria: { familiesExplored: 'all' },
+        category: 'mastery',
+    },
+    {
+        id: 'innovator',
+        title: 'Innovador',
+        description: 'Descubre un patrón completamente original',
+        icon: 'Star',
+        rarity: 'legendary',
+        points: 1000,
+        criteria: { originalPattern: true },
+        category: 'innovation',
+    },
+    {
+        id: 'algorithm-builder',
+        title: 'Constructor de Algoritmos',
+        description: 'Construye tu primer algoritmo funcional',
+        icon: 'Code',
+        rarity: 'common',
+        points: 150,
+        criteria: { algorithmsBuilt: 1 },
+        category: 'creation',
+    },
+    {
+        id: 'system-optimizer',
+        title: 'Optimizador de Sistemas',
+        description: 'Optimiza un sistema con 90% de eficiencia',
+        icon: 'Settings',
+        rarity: 'rare',
+        points: 600,
+        criteria: { optimizationEfficiency: 90 },
+        category: 'mastery',
+    },
+    {
+        id: 'perfectionist',
+        title: 'Perfeccionista',
+        description: 'Completa todas las fases con puntuación perfecta',
+        icon: 'Award',
+        rarity: 'legendary',
+        points: 2000,
+        criteria: { perfectScore: true },
+        category: 'mastery',
+    },
+    {
+        id: 'collaborator',
+        title: 'Colaborador',
+        description: 'Comparte y recibe feedback de tus creaciones',
+        icon: 'Share',
+        rarity: 'uncommon',
+        points: 200,
+        criteria: { collaborations: 1 },
+        category: 'collaboration',
     },
 ];
 
-export const AVAILABLE_BLOCKS: BlockCategory[] = [
+// ============================================================================
+// CONFIGURACIÓN DE CATEGORÍAS DE BLOQUES
+// ============================================================================
+
+export const BLOCK_CATEGORIES = [
     {
-        id: 'input-output',
-        name: 'Entrada y Salida',
-        description: 'Bloques para recibir datos y mostrar resultados',
+        id: 'data-input',
+        name: 'Entrada de Datos',
+        description: 'Bloques para recibir y cargar datos',
         color: '#3B82F6',
-        icon: 'ArrowRightLeft',
-        blocks: [
-            'input-number',
-            'input-text',
-            'output-display',
-            'output-chart',
-        ],
-    },
-    {
-        id: 'math-operations',
-        name: 'Operaciones Matemáticas',
-        description: 'Cálculos y operaciones numéricas',
-        color: '#10B981',
-        icon: 'Calculator',
-        blocks: [
-            'add',
-            'subtract',
-            'multiply',
-            'divide',
-            'power',
-            'sqrt',
-            'average',
-            'sum',
-        ],
-    },
-    {
-        id: 'logic-control',
-        name: 'Lógica y Control',
-        description: 'Estructuras de control y lógica condicional',
-        color: '#F59E0B',
-        icon: 'GitBranch',
-        blocks: [
-            'if-then',
-            'if-then-else',
-            'for-loop',
-            'while-loop',
-            'compare',
-            'and',
-            'or',
-            'not',
-        ],
-    },
-    {
-        id: 'data-processing',
-        name: 'Procesamiento de Datos',
-        description: 'Manipulación y análisis de conjuntos de datos',
-        color: '#8B5CF6',
         icon: 'Database',
         blocks: [
-            'filter',
-            'sort',
-            'group-by',
-            'count',
-            'find-max',
-            'find-min',
-            'unique',
-            'join',
+            'family-loader',
+            'data-input',
+            'file-reader',
+            'user-input',
+            'random-generator',
+        ],
+    },
+    {
+        id: 'analysis',
+        name: 'Análisis',
+        description: 'Herramientas para analizar patrones y relaciones',
+        color: '#10B981',
+        icon: 'BarChart',
+        blocks: [
+            'pattern-detector',
+            'relationship-analyzer',
+            'statistics-calculator',
+            'correlation-finder',
+            'trend-analyzer',
+        ],
+    },
+    {
+        id: 'mathematical',
+        name: 'Matemático',
+        description: 'Operaciones y funciones matemáticas',
+        color: '#F59E0B',
+        icon: 'Calculator',
+        blocks: [
+            'arithmetic-operation',
+            'statistical-function',
+            'geometric-calculation',
+            'algebraic-solver',
+            'equation-builder',
+        ],
+    },
+    {
+        id: 'control-flow',
+        name: 'Control de Flujo',
+        description: 'Estructuras de control para algoritmos',
+        color: '#8B5CF6',
+        icon: 'GitBranch',
+        blocks: [
+            'if-condition',
+            'for-loop',
+            'while-loop',
+            'switch-case',
+            'function-call',
         ],
     },
     {
@@ -266,6 +281,10 @@ export const AVAILABLE_BLOCKS: BlockCategory[] = [
     },
 ];
 
+// ============================================================================
+// CONFIGURACIÓN DE DIFICULTAD POR FASE
+// ============================================================================
+
 export const DIFFICULTY_SETTINGS = {
     beginner: {
         familiesRequired: 4,
@@ -293,12 +312,20 @@ export const DIFFICULTY_SETTINGS = {
     },
 };
 
+// ============================================================================
+// CONFIGURACIÓN DE PESOS PARA PUNTUACIÓN
+// ============================================================================
+
 export const SCORING_WEIGHTS = {
     exploration: 0.25, // Completeness of family exploration
     discovery: 0.3, // Quality and quantity of patterns found
     hypothesis: 0.25, // Accuracy of hypothesis testing
     efficiency: 0.2, // Time efficiency and resource usage
 };
+
+// ============================================================================
+// DEFINICIONES DE LOGROS
+// ============================================================================
 
 export const ACHIEVEMENT_DEFINITIONS = [
     {
@@ -326,97 +353,180 @@ export const ACHIEVEMENT_DEFINITIONS = [
         icon: 'Compass',
         rarity: 'rare',
         points: 500,
-        criteria: { familiesExplored: 20 },
+        criteria: { familiesExplored: 'all' },
     },
     {
         id: 'speed-demon',
         title: 'Demonio de la Velocidad',
-        description: 'Completar la Fase 1 en menos de 15 minutos',
+        description: 'Completar una fase en tiempo récord',
         icon: 'Zap',
-        rarity: 'rare',
-        points: 750,
-        criteria: { phase1Time: 900 }, // seconds
+        rarity: 'uncommon',
+        points: 300,
+        criteria: { speedRecord: true },
     },
     {
-        id: 'innovator',
-        title: 'Innovador',
-        description: 'Crear un patrón completamente original',
-        icon: 'Lightbulb',
+        id: 'perfectionist',
+        title: 'Perfeccionista',
+        description: 'Obtener puntuación perfecta en todas las fases',
+        icon: 'Star',
         rarity: 'legendary',
         points: 1000,
-        criteria: { originalPattern: true },
+        criteria: { perfectScore: true },
     },
 ];
 
-export const HINT_SYSTEM = {
-    maxHints: 3,
-    hintDelay: 30, // seconds of inactivity before showing hint
-    hintTypes: {
-        directional: 'Sugiere la dirección general a seguir',
-        specific: 'Proporciona información específica sobre un elemento',
-        strategic: 'Ofrece estrategias de alto nivel',
-        encouragement: 'Proporciona motivación y ánimo',
-    },
-    adaptiveHints: true, // Hints adapt based on student performance
-    hintPenalty: 0.1, // Score reduction per hint used
-};
+// ============================================================================
+// CONFIGURACIÓN DE ALGORITMOS DISPONIBLES
+// ============================================================================
 
-export const ANALYTICS_CONFIG = {
-    trackingEnabled: true,
-    anonymizeData: true,
-    metricsToTrack: [
-        'timeSpent',
-        'clicksCount',
-        'patternsDiscovered',
-        'hypothesesTested',
-        'familiesExplored',
-        'errorsCount',
-        'hintsUsed',
-        'achievementsUnlocked',
-    ],
-    realTimeAnalytics: true,
-    batchSize: 50,
-    transmissionInterval: 30000, // 30 seconds
-};
+export const AVAILABLE_ALGORITHMS = [
+    {
+        id: 'pattern-finder',
+        name: 'Buscador de Patrones',
+        description: 'Encuentra patrones en datos relacionales',
+        category: 'analysis',
+        complexity: 'medium',
+        inputs: ['family_data'],
+        outputs: ['patterns'],
+    },
+    {
+        id: 'relationship-mapper',
+        name: 'Mapeador de Relaciones',
+        description: 'Crea mapas visuales de relaciones familiares',
+        category: 'visualization',
+        complexity: 'easy',
+        inputs: ['family_data'],
+        outputs: ['relationship_map'],
+    },
+    {
+        id: 'hypothesis-tester',
+        name: 'Probador de Hipótesis',
+        description: 'Valida hipótesis usando datos empíricos',
+        category: 'analysis',
+        complexity: 'hard',
+        inputs: ['hypothesis', 'family_data'],
+        outputs: ['test_results'],
+    },
+];
 
-export const UI_CONFIG = {
-    theme: {
-        primary: '#3B82F6',
-        secondary: '#10B981',
-        accent: '#F59E0B',
-        neutral: '#6B7280',
-        error: '#EF4444',
-        warning: '#F59E0B',
-        success: '#10B981',
-    },
-    animations: {
-        enabled: true,
-        duration: 300,
-        easing: 'ease-in-out',
-    },
-    accessibility: {
-        highContrast: false,
-        reducedMotion: false,
-        screenReaderSupport: true,
-        keyboardNavigation: true,
-    },
-    responsive: {
-        breakpoints: {
-            mobile: 768,
-            tablet: 1024,
-            desktop: 1280,
-        },
-    },
-};
+// ============================================================================
+// FUNCIONES DE VALIDACIÓN
+// ============================================================================
 
-export default {
-    LAB_CONFIG,
-    PHASE_CONFIGS,
-    AVAILABLE_BLOCKS,
-    DIFFICULTY_SETTINGS,
-    SCORING_WEIGHTS,
-    ACHIEVEMENT_DEFINITIONS,
-    HINT_SYSTEM,
-    ANALYTICS_CONFIG,
-    UI_CONFIG,
-};
+/**
+ * Valida la configuración del laboratorio
+ */
+export function validateConfig(): boolean {
+    try {
+        // Validar estructura básica
+        if (!LAB_CONFIG.id || !LAB_CONFIG.name) {
+            throw new Error('Configuración básica incompleta');
+        }
+
+        // Validar fases
+        if (LAB_CONFIG.totalPhases < 1 || LAB_CONFIG.totalPhases > 10) {
+            throw new Error('Número de fases inválido');
+        }
+
+        // Validar dificultades
+        const difficulties = Object.keys(LAB_CONFIG.difficulty);
+        if (difficulties.length === 0) {
+            throw new Error('No se encontraron configuraciones de dificultad');
+        }
+
+        // Validar pesos de puntuación
+        const totalWeight = Object.values(LAB_CONFIG.scoringWeights).reduce(
+            (sum, weight) => sum + weight,
+            0
+        );
+
+        if (Math.abs(totalWeight - 1.0) > 0.01) {
+            throw new Error('Los pesos de puntuación deben sumar 1.0');
+        }
+
+        // Validar logros
+        if (ACHIEVEMENTS_CONFIG.length === 0) {
+            throw new Error('No se encontraron definiciones de logros');
+        }
+
+        console.log('✅ Configuración del laboratorio validada correctamente');
+        return true;
+    } catch (error) {
+        console.error('❌ Error en la validación de configuración:', error);
+        return false;
+    }
+}
+
+/**
+ * Obtiene la configuración para un nivel de dificultad específico
+ */
+export function getDifficultyConfig(
+    level: 'beginner' | 'intermediate' | 'advanced'
+) {
+    return LAB_CONFIG.difficulty[level];
+}
+
+/**
+ * Obtiene los logros disponibles para una categoría
+ */
+export function getAchievementsByCategory(category: string): Achievement[] {
+    return ACHIEVEMENTS_CONFIG.filter(
+        (achievement) => achievement.category === category
+    );
+}
+
+/**
+ * Verifica si se cumple el criterio para un logro
+ */
+export function checkAchievementCriteria(
+    achievement: Achievement,
+    userStats: Record<string, any>
+): boolean {
+    const criteria = achievement.criteria;
+
+    for (const [key, value] of Object.entries(criteria)) {
+        const userValue = userStats[key];
+
+        if (typeof value === 'number') {
+            if (userValue < value) return false;
+        } else if (typeof value === 'boolean') {
+            if (userValue !== value) return false;
+        } else if (value === 'all') {
+            // Lógica especial para "all"
+            if (!userStats.hasExploredAll) return false;
+        }
+    }
+
+    return true;
+}
+
+/**
+ * Calcula la puntuación total basada en los pesos configurados
+ */
+export function calculateTotalScore(scores: Record<string, number>): number {
+    let total = 0;
+
+    for (const [category, weight] of Object.entries(
+        LAB_CONFIG.scoringWeights
+    )) {
+        const score = scores[category] || 0;
+        total += score * weight;
+    }
+
+    return Math.round(total);
+}
+
+// ============================================================================
+// CONFIGURACIÓN DE EXPORTACIÓN
+// ============================================================================
+
+export default LAB_CONFIG;
+
+// Exportaciones individuales para compatibilidad
+export { LAB_CONFIG as labConfig };
+export { ACHIEVEMENTS_CONFIG as achievementsConfig };
+export { DIFFICULTY_SETTINGS as difficultySettings };
+export { SCORING_WEIGHTS as scoringWeights };
+export { ACHIEVEMENT_DEFINITIONS as achievementDefinitions };
+export { BLOCK_CATEGORIES as blockCategories };
+export { AVAILABLE_ALGORITHMS as availableAlgorithms };

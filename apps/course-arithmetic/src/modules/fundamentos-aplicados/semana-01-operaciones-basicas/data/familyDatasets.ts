@@ -1,893 +1,1357 @@
-// data/familyDatasets.ts
+// ============================================================================
+// DATASETS DE FAMILIAS - ARCHIVO COMPLETO
+// ============================================================================
 
-import { Family, FamilyDataset } from '../types/relationships';
+import {
+    FamilyDataset,
+    FamilyMember,
+    Relationship,
+    RelationshipType,
+} from '../types/relationships';
 
-export const ALL_FAMILIES: Family[] = [
-    {
-        id: 'family-1-simple',
-        name: 'Familia García',
-        description: 'Una familia nuclear simple con padres e hijos',
-        complexity: 'basic',
-        members: [
-            {
-                id: 'carlos-garcia',
-                name: 'Carlos García',
-                age: 42,
-                gender: 'male',
-                generation: 1,
-                position: [0, 0, 0],
-                relationships: ['maria-garcia', 'sofia-garcia', 'diego-garcia'],
-            },
-            {
-                id: 'maria-garcia',
-                name: 'María García',
-                age: 38,
-                gender: 'female',
-                generation: 1,
-                position: [2, 0, 0],
-                relationships: [
-                    'carlos-garcia',
-                    'sofia-garcia',
-                    'diego-garcia',
-                ],
-            },
-            {
-                id: 'sofia-garcia',
-                name: 'Sofía García',
-                age: 16,
-                gender: 'female',
-                generation: 2,
-                position: [0, -2, 0],
-                relationships: [
-                    'carlos-garcia',
-                    'maria-garcia',
-                    'diego-garcia',
-                ],
-            },
-            {
-                id: 'diego-garcia',
-                name: 'Diego García',
-                age: 12,
-                gender: 'male',
-                generation: 2,
-                position: [2, -2, 0],
-                relationships: [
-                    'carlos-garcia',
-                    'maria-garcia',
-                    'sofia-garcia',
-                ],
-            },
-        ],
-        relationships: [
-            {
-                id: 'rel-1',
-                type: 'spouse',
-                from: 'carlos-garcia',
-                to: 'maria-garcia',
-                strength: 1.0,
-                verified: true,
-            },
-            {
-                id: 'rel-2',
-                type: 'parent',
-                from: 'carlos-garcia',
-                to: 'sofia-garcia',
-                strength: 1.0,
-                verified: true,
-            },
-            {
-                id: 'rel-3',
-                type: 'parent',
-                from: 'carlos-garcia',
-                to: 'diego-garcia',
-                strength: 1.0,
-                verified: true,
-            },
-            {
-                id: 'rel-4',
-                type: 'parent',
-                from: 'maria-garcia',
-                to: 'sofia-garcia',
-                strength: 1.0,
-                verified: true,
-            },
-            {
-                id: 'rel-5',
-                type: 'parent',
-                from: 'maria-garcia',
-                to: 'diego-garcia',
-                strength: 1.0,
-                verified: true,
-            },
-            {
-                id: 'rel-6',
-                type: 'sibling',
-                from: 'sofia-garcia',
-                to: 'diego-garcia',
-                strength: 0.9,
-                verified: true,
-            },
-        ],
-        suggestedPatterns: [
-            'linear_sum',
-            'age_difference',
-            'generation_pattern',
-        ],
+// ============================================================================
+// FAMILIAS SIMPLES
+// ============================================================================
+
+export const FAMILIA_GARCIA: FamilyDataset = {
+    id: 'garcia-001',
+    name: 'Familia García',
+    description: 'Una familia nuclear típica con dos padres y dos hijos',
+    members: [
+        {
+            id: 'garcia-padre',
+            name: 'Carlos García',
+            age: 45,
+            gender: 'male',
+            occupation: 'Ingeniero',
+            traits: ['responsable', 'trabajador', 'familiar'],
+        },
+        {
+            id: 'garcia-madre',
+            name: 'María García',
+            age: 42,
+            gender: 'female',
+            occupation: 'Profesora',
+            traits: ['cariñosa', 'organizada', 'paciente'],
+        },
+        {
+            id: 'garcia-hijo1',
+            name: 'Alejandro García',
+            age: 16,
+            gender: 'male',
+            occupation: 'Estudiante',
+            traits: ['deportista', 'estudioso', 'sociable'],
+        },
+        {
+            id: 'garcia-hija1',
+            name: 'Sofia García',
+            age: 12,
+            gender: 'female',
+            occupation: 'Estudiante',
+            traits: ['artística', 'curiosa', 'amigable'],
+        },
+    ],
+    relationships: [
+        {
+            id: 'rel-001',
+            person1Id: 'garcia-padre',
+            person2Id: 'garcia-madre',
+            type: 'spouse',
+            strength: 0.9,
+            description: 'Matrimonio de 18 años',
+        },
+        {
+            id: 'rel-002',
+            person1Id: 'garcia-padre',
+            person2Id: 'garcia-hijo1',
+            type: 'parent',
+            strength: 0.85,
+            description: 'Relación padre-hijo',
+        },
+        {
+            id: 'rel-003',
+            person1Id: 'garcia-padre',
+            person2Id: 'garcia-hija1',
+            type: 'parent',
+            strength: 0.9,
+            description: 'Relación padre-hija',
+        },
+        {
+            id: 'rel-004',
+            person1Id: 'garcia-madre',
+            person2Id: 'garcia-hijo1',
+            type: 'parent',
+            strength: 0.8,
+            description: 'Relación madre-hijo',
+        },
+        {
+            id: 'rel-005',
+            person1Id: 'garcia-madre',
+            person2Id: 'garcia-hija1',
+            type: 'parent',
+            strength: 0.95,
+            description: 'Relación madre-hija muy estrecha',
+        },
+        {
+            id: 'rel-006',
+            person1Id: 'garcia-hijo1',
+            person2Id: 'garcia-hija1',
+            type: 'sibling',
+            strength: 0.7,
+            description: 'Hermanos con buena relación',
+        },
+    ],
+    metadata: {
+        createdAt: new Date('2024-01-15'),
+        lastUpdated: new Date('2024-01-15'),
+        version: '1.0.0',
+        tags: ['nuclear', 'tradicional', 'clase-media'],
+        complexity: 'simple',
+        educationalLevel: 'básico',
     },
-    {
-        id: 'family-2-extended',
-        name: 'Familia Rodríguez',
-        description: 'Familia extendida con tres generaciones',
-        complexity: 'intermediate',
-        members: [
-            {
-                id: 'abuelo-rodriguez',
-                name: 'Roberto Rodríguez',
-                age: 78,
-                gender: 'male',
-                generation: 0,
-                position: [1, 2, 0],
-                relationships: [
-                    'abuela-rodriguez',
-                    'padre-rodriguez',
-                    'tia-rodriguez',
-                ],
-            },
-            {
-                id: 'abuela-rodriguez',
-                name: 'Carmen Rodríguez',
-                age: 75,
-                gender: 'female',
-                generation: 0,
-                position: [3, 2, 0],
-                relationships: [
-                    'abuelo-rodriguez',
-                    'padre-rodriguez',
-                    'tia-rodriguez',
-                ],
-            },
-            {
-                id: 'padre-rodriguez',
-                name: 'Miguel Rodríguez',
-                age: 45,
-                gender: 'male',
-                generation: 1,
-                position: [0, 0, 0],
-                relationships: [
-                    'madre-rodriguez',
-                    'hijo1-rodriguez',
-                    'hijo2-rodriguez',
-                ],
-            },
-            {
-                id: 'madre-rodriguez',
-                name: 'Ana Rodríguez',
-                age: 43,
-                gender: 'female',
-                generation: 1,
-                position: [2, 0, 0],
-                relationships: [
-                    'padre-rodriguez',
-                    'hijo1-rodriguez',
-                    'hijo2-rodriguez',
-                ],
-            },
-            {
-                id: 'tia-rodriguez',
-                name: 'Elena Rodríguez',
-                age: 40,
-                gender: 'female',
-                generation: 1,
-                position: [4, 0, 0],
-                relationships: ['primo-rodriguez'],
-            },
-            {
-                id: 'hijo1-rodriguez',
-                name: 'Andrés Rodríguez',
-                age: 18,
-                gender: 'male',
-                generation: 2,
-                position: [0, -2, 0],
-                relationships: [
-                    'padre-rodriguez',
-                    'madre-rodriguez',
-                    'hijo2-rodriguez',
-                    'primo-rodriguez',
-                ],
-            },
-            {
-                id: 'hijo2-rodriguez',
-                name: 'Lucía Rodríguez',
-                age: 14,
-                gender: 'female',
-                generation: 2,
-                position: [2, -2, 0],
-                relationships: [
-                    'padre-rodriguez',
-                    'madre-rodriguez',
-                    'hijo1-rodriguez',
-                    'primo-rodriguez',
-                ],
-            },
-            {
-                id: 'primo-rodriguez',
-                name: 'Javier Rodríguez',
-                age: 16,
-                gender: 'male',
-                generation: 2,
-                position: [4, -2, 0],
-                relationships: [
-                    'tia-rodriguez',
-                    'hijo1-rodriguez',
-                    'hijo2-rodriguez',
-                ],
-            },
-        ],
-        relationships: [
-            // Generación 0
-            {
-                id: 'rel-r1',
-                type: 'spouse',
-                from: 'abuelo-rodriguez',
-                to: 'abuela-rodriguez',
-                strength: 1.0,
-                verified: true,
-            },
+};
 
-            // Generación 0 a 1
-            {
-                id: 'rel-r2',
-                type: 'parent',
-                from: 'abuelo-rodriguez',
-                to: 'padre-rodriguez',
-                strength: 1.0,
-                verified: true,
-            },
-            {
-                id: 'rel-r3',
-                type: 'parent',
-                from: 'abuela-rodriguez',
-                to: 'padre-rodriguez',
-                strength: 1.0,
-                verified: true,
-            },
-            {
-                id: 'rel-r4',
-                type: 'parent',
-                from: 'abuelo-rodriguez',
-                to: 'tia-rodriguez',
-                strength: 1.0,
-                verified: true,
-            },
-            {
-                id: 'rel-r5',
-                type: 'parent',
-                from: 'abuela-rodriguez',
-                to: 'tia-rodriguez',
-                strength: 1.0,
-                verified: true,
-            },
-
-            // Generación 1
-            {
-                id: 'rel-r6',
-                type: 'spouse',
-                from: 'padre-rodriguez',
-                to: 'madre-rodriguez',
-                strength: 1.0,
-                verified: true,
-            },
-            {
-                id: 'rel-r7',
-                type: 'sibling',
-                from: 'padre-rodriguez',
-                to: 'tia-rodriguez',
-                strength: 0.8,
-                verified: true,
-            },
-
-            // Generación 1 a 2
-            {
-                id: 'rel-r8',
-                type: 'parent',
-                from: 'padre-rodriguez',
-                to: 'hijo1-rodriguez',
-                strength: 1.0,
-                verified: true,
-            },
-            {
-                id: 'rel-r9',
-                type: 'parent',
-                from: 'madre-rodriguez',
-                to: 'hijo1-rodriguez',
-                strength: 1.0,
-                verified: true,
-            },
-            {
-                id: 'rel-r10',
-                type: 'parent',
-                from: 'padre-rodriguez',
-                to: 'hijo2-rodriguez',
-                strength: 1.0,
-                verified: true,
-            },
-            {
-                id: 'rel-r11',
-                type: 'parent',
-                from: 'madre-rodriguez',
-                to: 'hijo2-rodriguez',
-                strength: 1.0,
-                verified: true,
-            },
-            {
-                id: 'rel-r12',
-                type: 'parent',
-                from: 'tia-rodriguez',
-                to: 'primo-rodriguez',
-                strength: 1.0,
-                verified: true,
-            },
-
-            // Generación 2
-            {
-                id: 'rel-r13',
-                type: 'sibling',
-                from: 'hijo1-rodriguez',
-                to: 'hijo2-rodriguez',
-                strength: 0.9,
-                verified: true,
-            },
-        ],
-        suggestedPatterns: [
-            'generation_pattern',
-            'extended_family',
-            'sibling_groups',
-            'age_difference',
-        ],
+export const FAMILIA_LOPEZ: FamilyDataset = {
+    id: 'lopez-001',
+    name: 'Familia López',
+    description: 'Familia monoparental con madre soltera y tres hijos',
+    members: [
+        {
+            id: 'lopez-madre',
+            name: 'Ana López',
+            age: 38,
+            gender: 'female',
+            occupation: 'Enfermera',
+            traits: ['fuerte', 'independiente', 'dedicada'],
+        },
+        {
+            id: 'lopez-hijo1',
+            name: 'Diego López',
+            age: 15,
+            gender: 'male',
+            occupation: 'Estudiante',
+            traits: ['responsable', 'maduro', 'protector'],
+        },
+        {
+            id: 'lopez-hija1',
+            name: 'Camila López',
+            age: 11,
+            gender: 'female',
+            occupation: 'Estudiante',
+            traits: ['creativa', 'sensible', 'inteligente'],
+        },
+        {
+            id: 'lopez-hijo2',
+            name: 'Mateo López',
+            age: 7,
+            gender: 'male',
+            occupation: 'Estudiante',
+            traits: ['energético', 'divertido', 'travieso'],
+        },
+    ],
+    relationships: [
+        {
+            id: 'rel-lopez-001',
+            person1Id: 'lopez-madre',
+            person2Id: 'lopez-hijo1',
+            type: 'parent',
+            strength: 0.9,
+            description: 'Relación muy estrecha, él es su apoyo',
+        },
+        {
+            id: 'rel-lopez-002',
+            person1Id: 'lopez-madre',
+            person2Id: 'lopez-hija1',
+            type: 'parent',
+            strength: 0.85,
+            description: 'Relación cariñosa madre-hija',
+        },
+        {
+            id: 'rel-lopez-003',
+            person1Id: 'lopez-madre',
+            person2Id: 'lopez-hijo2',
+            type: 'parent',
+            strength: 0.8,
+            description: 'Relación tierna con el menor',
+        },
+        {
+            id: 'rel-lopez-004',
+            person1Id: 'lopez-hijo1',
+            person2Id: 'lopez-hija1',
+            type: 'sibling',
+            strength: 0.75,
+            description: 'Hermanos que se cuidan mutuamente',
+        },
+        {
+            id: 'rel-lopez-005',
+            person1Id: 'lopez-hijo1',
+            person2Id: 'lopez-hijo2',
+            type: 'sibling',
+            strength: 0.8,
+            description: 'Hermano mayor protector',
+        },
+        {
+            id: 'rel-lopez-006',
+            person1Id: 'lopez-hija1',
+            person2Id: 'lopez-hijo2',
+            type: 'sibling',
+            strength: 0.7,
+            description: 'Hermanos con diferencia de edad',
+        },
+    ],
+    metadata: {
+        createdAt: new Date('2024-01-15'),
+        lastUpdated: new Date('2024-01-15'),
+        version: '1.0.0',
+        tags: ['monoparental', 'madre-soltera', 'resiliente'],
+        complexity: 'medium',
+        educationalLevel: 'básico',
     },
-    {
-        id: 'family-3-mathematical',
-        name: 'Familia Fibonacci',
-        description:
-            'Familia con edades que siguen patrones matemáticos específicos',
-        complexity: 'advanced',
-        members: [
-            {
-                id: 'fib-1',
-                name: 'Luis Fibonacci',
-                age: 55,
-                gender: 'male',
-                generation: 1,
-                position: [0, 0, 0],
-                relationships: ['fib-2', 'fib-3', 'fib-4', 'fib-5'],
-            },
-            {
-                id: 'fib-2',
-                name: 'Sara Fibonacci',
-                age: 34,
-                gender: 'female',
-                generation: 1,
-                position: [2, 0, 0],
-                relationships: ['fib-1', 'fib-3', 'fib-4', 'fib-5'],
-            },
-            {
-                id: 'fib-3',
-                name: 'Pablo Fibonacci',
-                age: 21,
-                gender: 'male',
-                generation: 2,
-                position: [0, -2, 0],
-                relationships: ['fib-1', 'fib-2', 'fib-4', 'fib-5'],
-            },
-            {
-                id: 'fib-4',
-                name: 'Clara Fibonacci',
-                age: 13,
-                gender: 'female',
-                generation: 2,
-                position: [2, -2, 0],
-                relationships: ['fib-1', 'fib-2', 'fib-3', 'fib-5'],
-            },
-            {
-                id: 'fib-5',
-                name: 'Emma Fibonacci',
-                age: 8,
-                gender: 'female',
-                generation: 2,
-                position: [4, -2, 0],
-                relationships: ['fib-1', 'fib-2', 'fib-3', 'fib-4'],
-            },
-        ],
-        relationships: [
-            {
-                id: 'rel-f1',
-                type: 'spouse',
-                from: 'fib-1',
-                to: 'fib-2',
-                strength: 1.0,
-                verified: true,
-            },
-            {
-                id: 'rel-f2',
-                type: 'parent',
-                from: 'fib-1',
-                to: 'fib-3',
-                strength: 1.0,
-                verified: true,
-            },
-            {
-                id: 'rel-f3',
-                type: 'parent',
-                from: 'fib-2',
-                to: 'fib-3',
-                strength: 1.0,
-                verified: true,
-            },
-            {
-                id: 'rel-f4',
-                type: 'parent',
-                from: 'fib-1',
-                to: 'fib-4',
-                strength: 1.0,
-                verified: true,
-            },
-            {
-                id: 'rel-f5',
-                type: 'parent',
-                from: 'fib-2',
-                to: 'fib-4',
-                strength: 1.0,
-                verified: true,
-            },
-            {
-                id: 'rel-f6',
-                type: 'parent',
-                from: 'fib-1',
-                to: 'fib-5',
-                strength: 1.0,
-                verified: true,
-            },
-            {
-                id: 'rel-f7',
-                type: 'parent',
-                from: 'fib-2',
-                to: 'fib-5',
-                strength: 1.0,
-                verified: true,
-            },
-            {
-                id: 'rel-f8',
-                type: 'sibling',
-                from: 'fib-3',
-                to: 'fib-4',
-                strength: 0.9,
-                verified: true,
-            },
-            {
-                id: 'rel-f9',
-                type: 'sibling',
-                from: 'fib-4',
-                to: 'fib-5',
-                strength: 0.9,
-                verified: true,
-            },
-            {
-                id: 'rel-f10',
-                type: 'sibling',
-                from: 'fib-3',
-                to: 'fib-5',
-                strength: 0.8,
-                verified: true,
-            },
-        ],
-        suggestedPatterns: [
-            'linear_sum',
-            'age_difference',
-            'mathematical_sequence',
-        ],
+};
+
+// ============================================================================
+// FAMILIAS MEDIAS
+// ============================================================================
+
+export const FAMILIA_RODRIGUEZ: FamilyDataset = {
+    id: 'rodriguez-001',
+    name: 'Familia Rodríguez (Extendida)',
+    description: 'Familia extendida con tres generaciones viviendo juntas',
+    members: [
+        // Abuelos
+        {
+            id: 'rodriguez-abuelo',
+            name: 'Roberto Rodríguez',
+            age: 72,
+            gender: 'male',
+            occupation: 'Jubilado',
+            traits: ['sabio', 'tranquilo', 'cuentacuentos'],
+        },
+        {
+            id: 'rodriguez-abuela',
+            name: 'Carmen Rodríguez',
+            age: 69,
+            gender: 'female',
+            occupation: 'Jubilada',
+            traits: ['cocinera', 'cariñosa', 'tradicional'],
+        },
+        // Padres
+        {
+            id: 'rodriguez-padre',
+            name: 'Miguel Rodríguez',
+            age: 44,
+            gender: 'male',
+            occupation: 'Contador',
+            traits: ['organizado', 'responsable', 'familiar'],
+        },
+        {
+            id: 'rodriguez-madre',
+            name: 'Patricia Rodríguez',
+            age: 41,
+            gender: 'female',
+            occupation: 'Médica',
+            traits: ['dedicada', 'inteligente', 'equilibrada'],
+        },
+        // Hijos
+        {
+            id: 'rodriguez-hijo1',
+            name: 'Gabriel Rodríguez',
+            age: 18,
+            gender: 'male',
+            occupation: 'Universitario',
+            traits: ['ambicioso', 'estudioso', 'independiente'],
+        },
+        {
+            id: 'rodriguez-hija1',
+            name: 'Valentina Rodríguez',
+            age: 14,
+            gender: 'female',
+            occupation: 'Estudiante',
+            traits: ['artística', 'expresiva', 'rebelde'],
+        },
+        {
+            id: 'rodriguez-hijo2',
+            name: 'Santiago Rodríguez',
+            age: 9,
+            gender: 'male',
+            occupation: 'Estudiante',
+            traits: ['curioso', 'tecnológico', 'ingenioso'],
+        },
+    ],
+    relationships: [
+        // Relaciones abuelos-padres
+        {
+            id: 'rel-rod-001',
+            person1Id: 'rodriguez-abuelo',
+            person2Id: 'rodriguez-padre',
+            type: 'parent',
+            strength: 0.8,
+            description: 'Padre e hijo, relación tradicional',
+        },
+        {
+            id: 'rel-rod-002',
+            person1Id: 'rodriguez-abuela',
+            person2Id: 'rodriguez-padre',
+            type: 'parent',
+            strength: 0.85,
+            description: 'Madre e hijo muy unidos',
+        },
+        // Matrimonio
+        {
+            id: 'rel-rod-003',
+            person1Id: 'rodriguez-padre',
+            person2Id: 'rodriguez-madre',
+            type: 'spouse',
+            strength: 0.9,
+            description: 'Matrimonio sólido de 20 años',
+        },
+        {
+            id: 'rel-rod-004',
+            person1Id: 'rodriguez-abuelo',
+            person2Id: 'rodriguez-abuela',
+            type: 'spouse',
+            strength: 0.95,
+            description: 'Matrimonio de 50 años',
+        },
+        // Padres-hijos
+        {
+            id: 'rel-rod-005',
+            person1Id: 'rodriguez-padre',
+            person2Id: 'rodriguez-hijo1',
+            type: 'parent',
+            strength: 0.75,
+            description: 'Relación que se está ajustando',
+        },
+        {
+            id: 'rel-rod-006',
+            person1Id: 'rodriguez-padre',
+            person2Id: 'rodriguez-hija1',
+            type: 'parent',
+            strength: 0.7,
+            description: 'Etapa rebelde de la adolescente',
+        },
+        {
+            id: 'rel-rod-007',
+            person1Id: 'rodriguez-padre',
+            person2Id: 'rodriguez-hijo2',
+            type: 'parent',
+            strength: 0.9,
+            description: 'Relación muy estrecha padre-hijo',
+        },
+        {
+            id: 'rel-rod-008',
+            person1Id: 'rodriguez-madre',
+            person2Id: 'rodriguez-hijo1',
+            type: 'parent',
+            strength: 0.8,
+            description: 'Comprensión mutua',
+        },
+        {
+            id: 'rel-rod-009',
+            person1Id: 'rodriguez-madre',
+            person2Id: 'rodriguez-hija1',
+            type: 'parent',
+            strength: 0.65,
+            description: 'Conflictos típicos madre-hija adolescente',
+        },
+        {
+            id: 'rel-rod-010',
+            person1Id: 'rodriguez-madre',
+            person2Id: 'rodriguez-hijo2',
+            type: 'parent',
+            strength: 0.85,
+            description: 'Cuidado y apoyo escolar',
+        },
+        // Abuelos-nietos
+        {
+            id: 'rel-rod-011',
+            person1Id: 'rodriguez-abuelo',
+            person2Id: 'rodriguez-hijo1',
+            type: 'grandparent',
+            strength: 0.8,
+            description: 'Consejos de vida y experiencia',
+        },
+        {
+            id: 'rel-rod-012',
+            person1Id: 'rodriguez-abuelo',
+            person2Id: 'rodriguez-hija1',
+            type: 'grandparent',
+            strength: 0.85,
+            description: 'Abuelo comprensivo',
+        },
+        {
+            id: 'rel-rod-013',
+            person1Id: 'rodriguez-abuelo',
+            person2Id: 'rodriguez-hijo2',
+            type: 'grandparent',
+            strength: 0.9,
+            description: 'Compañeros de aventuras',
+        },
+        {
+            id: 'rel-rod-014',
+            person1Id: 'rodriguez-abuela',
+            person2Id: 'rodriguez-hijo1',
+            type: 'grandparent',
+            strength: 0.75,
+            description: 'Abuela preocupada por su futuro',
+        },
+        {
+            id: 'rel-rod-015',
+            person1Id: 'rodriguez-abuela',
+            person2Id: 'rodriguez-hija1',
+            type: 'grandparent',
+            strength: 0.8,
+            description: 'Confidencias entre mujeres',
+        },
+        {
+            id: 'rel-rod-016',
+            person1Id: 'rodriguez-abuela',
+            person2Id: 'rodriguez-hijo2',
+            type: 'grandparent',
+            strength: 0.95,
+            description: 'El consentido de la abuela',
+        },
+        // Hermanos
+        {
+            id: 'rel-rod-017',
+            person1Id: 'rodriguez-hijo1',
+            person2Id: 'rodriguez-hija1',
+            type: 'sibling',
+            strength: 0.6,
+            description: 'Diferencia de edad y etapas',
+        },
+        {
+            id: 'rel-rod-018',
+            person1Id: 'rodriguez-hijo1',
+            person2Id: 'rodriguez-hijo2',
+            type: 'sibling',
+            strength: 0.75,
+            description: 'Hermano mayor protector',
+        },
+        {
+            id: 'rel-rod-019',
+            person1Id: 'rodriguez-hija1',
+            person2Id: 'rodriguez-hijo2',
+            type: 'sibling',
+            strength: 0.7,
+            description: 'Hermana que cuida al menor',
+        },
+    ],
+    metadata: {
+        createdAt: new Date('2024-01-15'),
+        lastUpdated: new Date('2024-01-15'),
+        version: '1.0.0',
+        tags: ['extendida', 'tres-generaciones', 'tradicional'],
+        complexity: 'medium',
+        educationalLevel: 'intermedio',
     },
-    // ... más familias con diferentes patrones y complejidades
+};
+
+export const FAMILIA_MARTINEZ: FamilyDataset = {
+    id: 'martinez-001',
+    name: 'Familia Martínez (Reconstruida)',
+    description: 'Familia reconstruida con hijos de matrimonios anteriores',
+    members: [
+        {
+            id: 'martinez-padre',
+            name: 'Fernando Martínez',
+            age: 46,
+            gender: 'male',
+            occupation: 'Arquitecto',
+            traits: ['creativo', 'paciente', 'adaptable'],
+        },
+        {
+            id: 'martinez-madre',
+            name: 'Isabella Martínez',
+            age: 43,
+            gender: 'female',
+            occupation: 'Psicóloga',
+            traits: ['empática', 'comunicativa', 'resiliente'],
+        },
+        // Hijos de Fernando
+        {
+            id: 'martinez-hijo1',
+            name: 'Nicolás Martínez',
+            age: 17,
+            gender: 'male',
+            occupation: 'Estudiante',
+            traits: ['reservado', 'artístico', 'leal'],
+        },
+        {
+            id: 'martinez-hija1',
+            name: 'Emilia Martínez',
+            age: 13,
+            gender: 'female',
+            occupation: 'Estudiante',
+            traits: ['extrovertida', 'deportista', 'adaptable'],
+        },
+        // Hijos de Isabella
+        {
+            id: 'martinez-hijo2',
+            name: 'Sebastián Martínez',
+            age: 15,
+            gender: 'male',
+            occupation: 'Estudiante',
+            traits: ['intelectual', 'observador', 'cauteloso'],
+        },
+        // Hijo de ambos
+        {
+            id: 'martinez-hija2',
+            name: 'Luna Martínez',
+            age: 5,
+            gender: 'female',
+            occupation: 'Preescolar',
+            traits: ['alegre', 'unificadora', 'cariñosa'],
+        },
+    ],
+    relationships: [
+        // Matrimonio actual
+        {
+            id: 'rel-mart-001',
+            person1Id: 'martinez-padre',
+            person2Id: 'martinez-madre',
+            type: 'spouse',
+            strength: 0.85,
+            description: 'Segunda oportunidad en el amor',
+        },
+        // Fernando con sus hijos biológicos
+        {
+            id: 'rel-mart-002',
+            person1Id: 'martinez-padre',
+            person2Id: 'martinez-hijo1',
+            type: 'parent',
+            strength: 0.8,
+            description: 'Adaptándose a los cambios familiares',
+        },
+        {
+            id: 'rel-mart-003',
+            person1Id: 'martinez-padre',
+            person2Id: 'martinez-hija1',
+            type: 'parent',
+            strength: 0.85,
+            description: 'Relación sólida padre-hija',
+        },
+        // Fernando con hijo de Isabella
+        {
+            id: 'rel-mart-004',
+            person1Id: 'martinez-padre',
+            person2Id: 'martinez-hijo2',
+            type: 'parent',
+            strength: 0.6,
+            description: 'Construyendo la relación de padrastro',
+        },
+        // Isabella con hijos de Fernando
+        {
+            id: 'rel-mart-005',
+            person1Id: 'martinez-madre',
+            person2Id: 'martinez-hijo1',
+            type: 'parent',
+            strength: 0.65,
+            description: 'Respeto mutuo en construcción',
+        },
+        {
+            id: 'rel-mart-006',
+            person1Id: 'martinez-madre',
+            person2Id: 'martinez-hija1',
+            type: 'parent',
+            strength: 0.75,
+            description: 'Buena relación madrastra-hijastra',
+        },
+        // Isabella con su hijo biológico
+        {
+            id: 'rel-mart-007',
+            person1Id: 'martinez-madre',
+            person2Id: 'martinez-hijo2',
+            type: 'parent',
+            strength: 0.9,
+            description: 'Relación madre-hijo muy estrecha',
+        },
+        // Ambos con Luna
+        {
+            id: 'rel-mart-008',
+            person1Id: 'martinez-padre',
+            person2Id: 'martinez-hija2',
+            type: 'parent',
+            strength: 0.95,
+            description: 'El orgullo del padre',
+        },
+        {
+            id: 'rel-mart-009',
+            person1Id: 'martinez-madre',
+            person2Id: 'martinez-hija2',
+            type: 'parent',
+            strength: 0.95,
+            description: 'Amor incondicional madre-hija',
+        },
+        // Entre hermanastros
+        {
+            id: 'rel-mart-010',
+            person1Id: 'martinez-hijo1',
+            person2Id: 'martinez-hijo2',
+            type: 'sibling',
+            strength: 0.5,
+            description: 'Respeto cauteloso entre hermanastros',
+        },
+        {
+            id: 'rel-mart-011',
+            person1Id: 'martinez-hija1',
+            person2Id: 'martinez-hijo2',
+            type: 'sibling',
+            strength: 0.7,
+            description: 'Mejor adaptación entre hermanastros',
+        },
+        // Todos con Luna (hermana común)
+        {
+            id: 'rel-mart-012',
+            person1Id: 'martinez-hijo1',
+            person2Id: 'martinez-hija2',
+            type: 'sibling',
+            strength: 0.9,
+            description: 'Hermano mayor protector',
+        },
+        {
+            id: 'rel-mart-013',
+            person1Id: 'martinez-hija1',
+            person2Id: 'martinez-hija2',
+            type: 'sibling',
+            strength: 0.85,
+            description: 'Hermana mayor cuidadora',
+        },
+        {
+            id: 'rel-mart-014',
+            person1Id: 'martinez-hijo2',
+            person2Id: 'martinez-hija2',
+            type: 'sibling',
+            strength: 0.8,
+            description: 'Hermano medio protector',
+        },
+        // Entre hermanos biológicos
+        {
+            id: 'rel-mart-015',
+            person1Id: 'martinez-hijo1',
+            person2Id: 'martinez-hija1',
+            type: 'sibling',
+            strength: 0.75,
+            description: 'Hermanos que se apoyan en los cambios',
+        },
+    ],
+    metadata: {
+        createdAt: new Date('2024-01-15'),
+        lastUpdated: new Date('2024-01-15'),
+        version: '1.0.0',
+        tags: ['reconstruida', 'compleja', 'adaptación'],
+        complexity: 'complex',
+        educationalLevel: 'intermedio',
+    },
+};
+
+// ============================================================================
+// FAMILIAS COMPLEJAS
+// ============================================================================
+
+export const FAMILIA_TORRES: FamilyDataset = {
+    id: 'torres-001',
+    name: 'Familia Torres (Multigeneracional)',
+    description: 'Familia compleja de cuatro generaciones con múltiples ramas',
+    members: [
+        // Bisabuela
+        {
+            id: 'torres-bisabuela',
+            name: 'Esperanza Torres',
+            age: 89,
+            gender: 'female',
+            occupation: 'Jubilada',
+            traits: ['sabia', 'matriarca', 'fuerte'],
+        },
+        // Abuelos paternos
+        {
+            id: 'torres-abuelo-p',
+            name: 'Antonio Torres',
+            age: 68,
+            gender: 'male',
+            occupation: 'Jubilado',
+            traits: ['trabajador', 'estricto', 'proveedor'],
+        },
+        {
+            id: 'torres-abuela-p',
+            name: 'Rosa Torres',
+            age: 65,
+            gender: 'female',
+            occupation: 'Jubilada',
+            traits: ['cariñosa', 'mediadora', 'cocinera'],
+        },
+        // Abuelos maternos
+        {
+            id: 'torres-abuelo-m',
+            name: 'Luis Herrera',
+            age: 70,
+            gender: 'male',
+            occupation: 'Jubilado',
+            traits: ['intelectual', 'callado', 'observador'],
+        },
+        {
+            id: 'torres-abuela-m',
+            name: 'Gloria Herrera',
+            age: 67,
+            gender: 'female',
+            occupation: 'Jubilada',
+            traits: ['moderna', 'independiente', 'viajera'],
+        },
+        // Tíos/Tías
+        {
+            id: 'torres-tio1',
+            name: 'Ricardo Torres',
+            age: 45,
+            gender: 'male',
+            occupation: 'Empresario',
+            traits: ['exitoso', 'competitivo', 'generoso'],
+        },
+        {
+            id: 'torres-tia1',
+            name: 'Claudia Herrera',
+            age: 39,
+            gender: 'female',
+            occupation: 'Artista',
+            traits: ['creativa', 'libre', 'inspiradora'],
+        },
+        // Padres
+        {
+            id: 'torres-padre',
+            name: 'Eduardo Torres',
+            age: 42,
+            gender: 'male',
+            occupation: 'Médico',
+            traits: ['dedicado', 'serio', 'comprometido'],
+        },
+        {
+            id: 'torres-madre',
+            name: 'Lucía Torres',
+            age: 40,
+            gender: 'female',
+            occupation: 'Abogada',
+            traits: ['determinada', 'justa', 'equilibrada'],
+        },
+        // Hijos principales
+        {
+            id: 'torres-hijo1',
+            name: 'Andrés Torres',
+            age: 19,
+            gender: 'male',
+            occupation: 'Universitario',
+            traits: ['idealista', 'rebelde', 'inteligente'],
+        },
+        {
+            id: 'torres-hija1',
+            name: 'Catalina Torres',
+            age: 16,
+            gender: 'female',
+            occupation: 'Estudiante',
+            traits: ['perfeccionista', 'responsable', 'líder'],
+        },
+        {
+            id: 'torres-hijo2',
+            name: 'Tomás Torres',
+            age: 12,
+            gender: 'male',
+            occupation: 'Estudiante',
+            traits: ['curioso', 'científico', 'metódico'],
+        },
+        // Primos
+        {
+            id: 'torres-primo1',
+            name: 'Marcos Torres',
+            age: 17,
+            gender: 'male',
+            occupation: 'Estudiante',
+            traits: ['deportista', 'popular', 'carismático'],
+        },
+        {
+            id: 'torres-prima1',
+            name: 'Sofía Herrera',
+            age: 14,
+            gender: 'female',
+            occupation: 'Estudiante',
+            traits: ['artística', 'sensible', 'talentosa'],
+        },
+    ],
+    relationships: [
+        // Relaciones generación 1 (bisabuela)
+        {
+            id: 'rel-torres-001',
+            person1Id: 'torres-bisabuela',
+            person2Id: 'torres-abuelo-p',
+            type: 'parent',
+            strength: 0.8,
+            description: 'Madre e hijo, relación tradicional',
+        },
+
+        // Relaciones generación 2 (abuelos)
+        {
+            id: 'rel-torres-002',
+            person1Id: 'torres-abuelo-p',
+            person2Id: 'torres-abuela-p',
+            type: 'spouse',
+            strength: 0.85,
+            description: 'Matrimonio de 45 años',
+        },
+        {
+            id: 'rel-torres-003',
+            person1Id: 'torres-abuelo-m',
+            person2Id: 'torres-abuela-m',
+            type: 'spouse',
+            strength: 0.8,
+            description: 'Matrimonio de 42 años',
+        },
+
+        // Relaciones generación 2 → 3 (abuelos → tíos/padres)
+        {
+            id: 'rel-torres-004',
+            person1Id: 'torres-abuelo-p',
+            person2Id: 'torres-padre',
+            type: 'parent',
+            strength: 0.75,
+            description: 'Padre e hijo con expectativas altas',
+        },
+        {
+            id: 'rel-torres-005',
+            person1Id: 'torres-abuelo-p',
+            person2Id: 'torres-tio1',
+            type: 'parent',
+            strength: 0.8,
+            description: 'Orgullo por el éxito del hijo',
+        },
+        {
+            id: 'rel-torres-006',
+            person1Id: 'torres-abuela-p',
+            person2Id: 'torres-padre',
+            type: 'parent',
+            strength: 0.9,
+            description: 'Relación muy estrecha madre-hijo',
+        },
+        {
+            id: 'rel-torres-007',
+            person1Id: 'torres-abuela-p',
+            person2Id: 'torres-tio1',
+            type: 'parent',
+            strength: 0.85,
+            description: 'Madre orgullosa de ambos hijos',
+        },
+        {
+            id: 'rel-torres-008',
+            person1Id: 'torres-abuelo-m',
+            person2Id: 'torres-madre',
+            type: 'parent',
+            strength: 0.8,
+            description: 'Respeto mutuo padre-hija',
+        },
+        {
+            id: 'rel-torres-009',
+            person1Id: 'torres-abuelo-m',
+            person2Id: 'torres-tia1',
+            type: 'parent',
+            strength: 0.7,
+            description: 'Diferencias generacionales',
+        },
+        {
+            id: 'rel-torres-010',
+            person1Id: 'torres-abuela-m',
+            person2Id: 'torres-madre',
+            type: 'parent',
+            strength: 0.85,
+            description: 'Admiración mutua entre mujeres exitosas',
+        },
+        {
+            id: 'rel-torres-011',
+            person1Id: 'torres-abuela-m',
+            person2Id: 'torres-tia1',
+            type: 'parent',
+            strength: 0.8,
+            description: 'Apoyo a la creatividad de la hija',
+        },
+
+        // Matrimonio principal
+        {
+            id: 'rel-torres-012',
+            person1Id: 'torres-padre',
+            person2Id: 'torres-madre',
+            type: 'spouse',
+            strength: 0.9,
+            description: 'Matrimonio sólido de profesionales',
+        },
+
+        // Hermanos (generación 3)
+        {
+            id: 'rel-torres-013',
+            person1Id: 'torres-padre',
+            person2Id: 'torres-tio1',
+            type: 'sibling',
+            strength: 0.7,
+            description: 'Hermanos con personalidades diferentes',
+        },
+        {
+            id: 'rel-torres-014',
+            person1Id: 'torres-madre',
+            person2Id: 'torres-tia1',
+            type: 'sibling',
+            strength: 0.6,
+            description: 'Hermanas con caminos muy diferentes',
+        },
+
+        // Padres → hijos (generación 3 → 4)
+        {
+            id: 'rel-torres-015',
+            person1Id: 'torres-padre',
+            person2Id: 'torres-hijo1',
+            type: 'parent',
+            strength: 0.65,
+            description: 'Conflictos generacionales sobre el futuro',
+        },
+        {
+            id: 'rel-torres-016',
+            person1Id: 'torres-padre',
+            person2Id: 'torres-hija1',
+            type: 'parent',
+            strength: 0.85,
+            description: 'Admiración por la responsabilidad de la hija',
+        },
+        {
+            id: 'rel-torres-017',
+            person1Id: 'torres-padre',
+            person2Id: 'torres-hijo2',
+            type: 'parent',
+            strength: 0.9,
+            description: 'Compartiendo la pasión por la ciencia',
+        },
+        {
+            id: 'rel-torres-018',
+            person1Id: 'torres-madre',
+            person2Id: 'torres-hijo1',
+            type: 'parent',
+            strength: 0.7,
+            description: 'Comprende sus ideales pero se preocupa',
+        },
+        {
+            id: 'rel-torres-019',
+            person1Id: 'torres-madre',
+            person2Id: 'torres-hija1',
+            type: 'parent',
+            strength: 0.8,
+            description: 'Modelo a seguir para la hija',
+        },
+        {
+            id: 'rel-torres-020',
+            person1Id: 'torres-madre',
+            person2Id: 'torres-hijo2',
+            type: 'parent',
+            strength: 0.85,
+            description: 'Apoyo en el desarrollo intelectual',
+        },
+
+        // Tíos → primos
+        {
+            id: 'rel-torres-021',
+            person1Id: 'torres-tio1',
+            person2Id: 'torres-primo1',
+            type: 'parent',
+            strength: 0.8,
+            description: 'Padre orgulloso del talento deportivo',
+        },
+        {
+            id: 'rel-torres-022',
+            person1Id: 'torres-tia1',
+            person2Id: 'torres-prima1',
+            type: 'parent',
+            strength: 0.9,
+            description: 'Conexión artística madre-hija',
+        },
+
+        // Hermanos directos
+        {
+            id: 'rel-torres-023',
+            person1Id: 'torres-hijo1',
+            person2Id: 'torres-hija1',
+            type: 'sibling',
+            strength: 0.75,
+            description: 'Respeto mutuo entre hermanos diferentes',
+        },
+        {
+            id: 'rel-torres-024',
+            person1Id: 'torres-hijo1',
+            person2Id: 'torres-hijo2',
+            type: 'sibling',
+            strength: 0.8,
+            description: 'Hermano mayor mentor',
+        },
+        {
+            id: 'rel-torres-025',
+            person1Id: 'torres-hija1',
+            person2Id: 'torres-hijo2',
+            type: 'sibling',
+            strength: 0.85,
+            description: 'Hermana responsable que cuida al menor',
+        },
+
+        // Primos entre sí
+        {
+            id: 'rel-torres-026',
+            person1Id: 'torres-hijo1',
+            person2Id: 'torres-primo1',
+            type: 'cousin',
+            strength: 0.7,
+            description: 'Primos de edades similares',
+        },
+        {
+            id: 'rel-torres-027',
+            person1Id: 'torres-hija1',
+            person2Id: 'torres-primo1',
+            type: 'cousin',
+            strength: 0.6,
+            description: 'Primos con personalidades diferentes',
+        },
+        {
+            id: 'rel-torres-028',
+            person1Id: 'torres-hija1',
+            person2Id: 'torres-prima1',
+            type: 'cousin',
+            strength: 0.8,
+            description: 'Primas que se apoyan mutuamente',
+        },
+        {
+            id: 'rel-torres-029',
+            person1Id: 'torres-hijo2',
+            person2Id: 'torres-prima1',
+            type: 'cousin',
+            strength: 0.7,
+            description: 'Primo y prima con buena relación',
+        },
+
+        // Relaciones especiales bisabuela-bisnietos
+        {
+            id: 'rel-torres-030',
+            person1Id: 'torres-bisabuela',
+            person2Id: 'torres-hijo1',
+            type: 'grandparent',
+            strength: 0.8,
+            description: 'Bisabuela que entiende la rebeldía',
+        },
+        {
+            id: 'rel-torres-031',
+            person1Id: 'torres-bisabuela',
+            person2Id: 'torres-hija1',
+            type: 'grandparent',
+            strength: 0.9,
+            description: 'Admiración por la fortaleza de la bisnieta',
+        },
+
+        // Abuelos-nietos (algunas relaciones destacadas)
+        {
+            id: 'rel-torres-032',
+            person1Id: 'torres-abuelo-p',
+            person2Id: 'torres-hijo1',
+            type: 'grandparent',
+            strength: 0.6,
+            description: 'Diferencias de opinión sobre el futuro',
+        },
+        {
+            id: 'rel-torres-033',
+            person1Id: 'torres-abuela-p',
+            person2Id: 'torres-hija1',
+            type: 'grandparent',
+            strength: 0.9,
+            description: 'Abuela orgullosa de la nieta responsable',
+        },
+        {
+            id: 'rel-torres-034',
+            person1Id: 'torres-abuelo-m',
+            person2Id: 'torres-hijo2',
+            type: 'grandparent',
+            strength: 0.85,
+            description: 'Compartiendo el amor por el conocimiento',
+        },
+    ],
+    metadata: {
+        createdAt: new Date('2024-01-15'),
+        lastUpdated: new Date('2024-01-15'),
+        version: '1.0.0',
+        tags: [
+            'multigeneracional',
+            'compleja',
+            'profesional',
+            'tradicional-moderna',
+        ],
+        complexity: 'complex',
+        educationalLevel: 'avanzado',
+    },
+};
+
+// ============================================================================
+// ARRAYS DE FAMILIAS POR COMPLEJIDAD
+// ============================================================================
+
+export const SIMPLE_FAMILIES: FamilyDataset[] = [FAMILIA_GARCIA, FAMILIA_LOPEZ];
+
+export const MEDIUM_FAMILIES: FamilyDataset[] = [
+    FAMILIA_RODRIGUEZ,
+    FAMILIA_MARTINEZ,
 ];
 
-// Familias adicionales para completar el dataset de 20 familias
-const ADDITIONAL_FAMILIES: Family[] = [
-    {
-        id: 'family-4-arithmetic',
-        name: 'Familia Aritmética',
-        description: 'Edades siguen progresión aritmética',
-        complexity: 'intermediate',
-        members: [
-            {
-                id: 'ar-1',
-                name: 'Pedro Suma',
-                age: 50,
-                gender: 'male',
-                generation: 1,
-                position: [0, 0, 0],
-                relationships: ['ar-2', 'ar-3', 'ar-4'],
-            },
-            {
-                id: 'ar-2',
-                name: 'Laura Suma',
-                age: 45,
-                gender: 'female',
-                generation: 1,
-                position: [2, 0, 0],
-                relationships: ['ar-1', 'ar-3', 'ar-4'],
-            },
-            {
-                id: 'ar-3',
-                name: 'Carlos Suma',
-                age: 20,
-                gender: 'male',
-                generation: 2,
-                position: [0, -2, 0],
-                relationships: ['ar-1', 'ar-2', 'ar-4'],
-            },
-            {
-                id: 'ar-4',
-                name: 'Ana Suma',
-                age: 15,
-                gender: 'female',
-                generation: 2,
-                position: [2, -2, 0],
-                relationships: ['ar-1', 'ar-2', 'ar-3'],
-            },
-        ],
-        relationships: [
-            {
-                id: 'rel-ar1',
-                type: 'spouse',
-                from: 'ar-1',
-                to: 'ar-2',
-                strength: 1.0,
-                verified: true,
-            },
-            {
-                id: 'rel-ar2',
-                type: 'parent',
-                from: 'ar-1',
-                to: 'ar-3',
-                strength: 1.0,
-                verified: true,
-            },
-            {
-                id: 'rel-ar3',
-                type: 'parent',
-                from: 'ar-2',
-                to: 'ar-3',
-                strength: 1.0,
-                verified: true,
-            },
-            {
-                id: 'rel-ar4',
-                type: 'parent',
-                from: 'ar-1',
-                to: 'ar-4',
-                strength: 1.0,
-                verified: true,
-            },
-            {
-                id: 'rel-ar5',
-                type: 'parent',
-                from: 'ar-2',
-                to: 'ar-4',
-                strength: 1.0,
-                verified: true,
-            },
-            {
-                id: 'rel-ar6',
-                type: 'sibling',
-                from: 'ar-3',
-                to: 'ar-4',
-                strength: 0.9,
-                verified: true,
-            },
-        ],
-        suggestedPatterns: [
-            'linear_sum',
-            'age_difference',
-            'arithmetic_progression',
-        ],
-    },
-    {
-        id: 'family-5-geometric',
-        name: 'Familia Geométrica',
-        description: 'Relaciones familiares con patrones geométricos',
-        complexity: 'advanced',
-        members: [
-            {
-                id: 'geo-1',
-                name: 'Roberto Círculo',
-                age: 64,
-                gender: 'male',
-                generation: 1,
-                position: [0, 0, 0],
-                relationships: ['geo-2', 'geo-3', 'geo-4'],
-            },
-            {
-                id: 'geo-2',
-                name: 'María Círculo',
-                age: 32,
-                gender: 'female',
-                generation: 1,
-                position: [2, 0, 0],
-                relationships: ['geo-1', 'geo-3', 'geo-4'],
-            },
-            {
-                id: 'geo-3',
-                name: 'Juan Círculo',
-                age: 16,
-                gender: 'male',
-                generation: 2,
-                position: [0, -2, 0],
-                relationships: ['geo-1', 'geo-2', 'geo-4'],
-            },
-            {
-                id: 'geo-4',
-                name: 'Sofía Círculo',
-                age: 8,
-                gender: 'female',
-                generation: 2,
-                position: [2, -2, 0],
-                relationships: ['geo-1', 'geo-2', 'geo-3'],
-            },
-        ],
-        relationships: [
-            {
-                id: 'rel-geo1',
-                type: 'spouse',
-                from: 'geo-1',
-                to: 'geo-2',
-                strength: 1.0,
-                verified: true,
-            },
-            {
-                id: 'rel-geo2',
-                type: 'parent',
-                from: 'geo-1',
-                to: 'geo-3',
-                strength: 1.0,
-                verified: true,
-            },
-            {
-                id: 'rel-geo3',
-                type: 'parent',
-                from: 'geo-2',
-                to: 'geo-3',
-                strength: 1.0,
-                verified: true,
-            },
-            {
-                id: 'rel-geo4',
-                type: 'parent',
-                from: 'geo-1',
-                to: 'geo-4',
-                strength: 1.0,
-                verified: true,
-            },
-            {
-                id: 'rel-geo5',
-                type: 'parent',
-                from: 'geo-2',
-                to: 'geo-4',
-                strength: 1.0,
-                verified: true,
-            },
-            {
-                id: 'rel-geo6',
-                type: 'sibling',
-                from: 'geo-3',
-                to: 'geo-4',
-                strength: 0.9,
-                verified: true,
-            },
-        ],
-        suggestedPatterns: [
-            'geometric_progression',
-            'age_difference',
-            'generation_pattern',
-        ],
-    },
+export const COMPLEX_FAMILIES: FamilyDataset[] = [FAMILIA_TORRES];
+
+export const ALL_FAMILIES: FamilyDataset[] = [
+    ...SIMPLE_FAMILIES,
+    ...MEDIUM_FAMILIES,
+    ...COMPLEX_FAMILIES,
 ];
 
-// Generar 13 familias más con variaciones sistemáticas
-const generateAdditionalFamilies = (): Family[] => {
-    const families: Family[] = [];
+// ============================================================================
+// FUNCIONES UTILITARIAS
+// ============================================================================
 
-    for (let i = 6; i <= 20; i++) {
-        const familyId = `family-${i}-variation`;
-        const baseAge = 30 + i * 2;
-        const agePattern = i % 3; // 0: linear, 1: fibonacci-like, 2: geometric
+/**
+ * Obtener familias por nivel de complejidad
+ */
+export function getFamiliesByComplexity(
+    complexity: 'simple' | 'medium' | 'complex'
+): FamilyDataset[] {
+    switch (complexity) {
+        case 'simple':
+            return SIMPLE_FAMILIES;
+        case 'medium':
+            return MEDIUM_FAMILIES;
+        case 'complex':
+            return COMPLEX_FAMILIES;
+        default:
+            return ALL_FAMILIES;
+    }
+}
 
-        let ages: number[] = [];
-        switch (agePattern) {
-            case 0: // Linear progression
-                ages = [baseAge + 20, baseAge + 15, baseAge - 10, baseAge - 15];
-                break;
-            case 1: // Fibonacci-like
-                ages = [baseAge + 18, baseAge + 12, baseAge - 8, baseAge - 20];
-                break;
-            case 2: // Geometric-like
-                ages = [baseAge + 24, baseAge + 12, baseAge - 6, baseAge - 18];
-                break;
-        }
+/**
+ * Obtener familias para una fase específica
+ */
+export function getFamiliesForPhase(phase: number): FamilyDataset[] {
+    switch (phase) {
+        case 1:
+            return SIMPLE_FAMILIES;
+        case 2:
+            return [...SIMPLE_FAMILIES, ...MEDIUM_FAMILIES];
+        case 3:
+            return [...MEDIUM_FAMILIES, ...COMPLEX_FAMILIES];
+        case 4:
+            return ALL_FAMILIES;
+        default:
+            return ALL_FAMILIES;
+    }
+}
 
-        families.push({
-            id: familyId,
-            name: `Familia Patrón ${i}`,
-            description: `Familia con patrón matemático tipo ${agePattern}`,
-            complexity:
-                i <= 10 ? 'basic' : i <= 15 ? 'intermediate' : 'advanced',
-            members: [
-                {
-                    id: `${familyId}-p1`,
-                    name: `Padre ${i}`,
-                    age: ages[0],
-                    gender: 'male',
-                    generation: 1,
-                    position: [0, 0, 0],
-                    relationships: [
-                        `${familyId}-p2`,
-                        `${familyId}-c1`,
-                        `${familyId}-c2`,
-                    ],
-                },
-                {
-                    id: `${familyId}-p2`,
-                    name: `Madre ${i}`,
-                    age: ages[1],
-                    gender: 'female',
-                    generation: 1,
-                    position: [2, 0, 0],
-                    relationships: [
-                        `${familyId}-p1`,
-                        `${familyId}-c1`,
-                        `${familyId}-c2`,
-                    ],
-                },
-                {
-                    id: `${familyId}-c1`,
-                    name: `Hijo ${i}`,
-                    age: ages[2],
-                    gender: i % 2 === 0 ? 'male' : 'female',
-                    generation: 2,
-                    position: [0, -2, 0],
-                    relationships: [
-                        `${familyId}-p1`,
-                        `${familyId}-p2`,
-                        `${familyId}-c2`,
-                    ],
-                },
-                {
-                    id: `${familyId}-c2`,
-                    name: `Hija ${i}`,
-                    age: ages[3],
-                    gender: i % 2 === 0 ? 'female' : 'male',
-                    generation: 2,
-                    position: [2, -2, 0],
-                    relationships: [
-                        `${familyId}-p1`,
-                        `${familyId}-p2`,
-                        `${familyId}-c1`,
-                    ],
-                },
-            ],
-            relationships: [
-                {
-                    id: `rel-${familyId}-1`,
-                    type: 'spouse',
-                    from: `${familyId}-p1`,
-                    to: `${familyId}-p2`,
-                    strength: 1.0,
-                    verified: true,
-                },
-                {
-                    id: `rel-${familyId}-2`,
-                    type: 'parent',
-                    from: `${familyId}-p1`,
-                    to: `${familyId}-c1`,
-                    strength: 1.0,
-                    verified: true,
-                },
-                {
-                    id: `rel-${familyId}-3`,
-                    type: 'parent',
-                    from: `${familyId}-p2`,
-                    to: `${familyId}-c1`,
-                    strength: 1.0,
-                    verified: true,
-                },
-                {
-                    id: `rel-${familyId}-4`,
-                    type: 'parent',
-                    from: `${familyId}-p1`,
-                    to: `${familyId}-c2`,
-                    strength: 1.0,
-                    verified: true,
-                },
-                {
-                    id: `rel-${familyId}-5`,
-                    type: 'parent',
-                    from: `${familyId}-p2`,
-                    to: `${familyId}-c2`,
-                    strength: 1.0,
-                    verified: true,
-                },
-                {
-                    id: `rel-${familyId}-6`,
-                    type: 'sibling',
-                    from: `${familyId}-c1`,
-                    to: `${familyId}-c2`,
-                    strength: 0.9,
-                    verified: true,
-                },
-            ],
-            suggestedPatterns:
-                agePattern === 0
-                    ? ['linear_sum', 'age_difference']
-                    : agePattern === 1
-                      ? ['mathematical_sequence', 'age_difference']
-                      : ['geometric_progression', 'generation_pattern'],
+/**
+ * Obtener familia por ID
+ */
+export function getFamilyById(id: string): FamilyDataset | undefined {
+    return ALL_FAMILIES.find((family) => family.id === id);
+}
+
+/**
+ * Buscar familias por tags
+ */
+export function searchFamiliesByTags(tags: string[]): FamilyDataset[] {
+    return ALL_FAMILIES.filter((family) =>
+        family.metadata?.tags?.some((tag) =>
+            tags.some((searchTag) =>
+                tag.toLowerCase().includes(searchTag.toLowerCase())
+            )
+        )
+    );
+}
+
+/**
+ * Obtener estadísticas de una familia
+ */
+export function getFamilyStatistics(family: FamilyDataset) {
+    const members = family.members;
+    const relationships = family.relationships;
+
+    return {
+        totalMembers: members.length,
+        averageAge:
+            members.reduce((sum, member) => sum + (member.age || 0), 0) /
+            members.length,
+        generations: calculateGenerations(family),
+        relationshipDensity:
+            relationships.length /
+            ((members.length * (members.length - 1)) / 2),
+        genderDistribution: {
+            male: members.filter((m) => m.gender === 'male').length,
+            female: members.filter((m) => m.gender === 'female').length,
+            other: members.filter((m) => m.gender === 'other').length,
+        },
+        relationshipTypes: countRelationshipTypes(relationships),
+        complexity: family.metadata?.complexity || 'unknown',
+    };
+}
+
+/**
+ * Calcular número de generaciones en una familia
+ */
+function calculateGenerations(family: FamilyDataset): number {
+    const relationships = family.relationships;
+    const parentChildRels = relationships.filter(
+        (rel) => rel.type === 'parent' || rel.type === 'grandparent'
+    );
+
+    if (parentChildRels.length === 0) return 1;
+
+    // Simplificación: contar niveles únicos basados en relaciones
+    const generations = new Set<number>();
+
+    // Agregar lógica más sofisticada aquí si es necesario
+    if (parentChildRels.some((rel) => rel.type === 'grandparent')) {
+        return 3; // Al menos 3 generaciones
+    } else if (parentChildRels.some((rel) => rel.type === 'parent')) {
+        return 2; // Al menos 2 generaciones
+    }
+
+    return 1;
+}
+
+/**
+ * Contar tipos de relaciones
+ */
+function countRelationshipTypes(
+    relationships: Relationship[]
+): Record<RelationshipType, number> {
+    const counts: Record<string, number> = {};
+
+    relationships.forEach((rel) => {
+        counts[rel.type] = (counts[rel.type] || 0) + 1;
+    });
+
+    return counts as Record<RelationshipType, number>;
+}
+
+/**
+ * Generar familia aleatoria simple
+ */
+export function generateRandomSimpleFamily(): FamilyDataset {
+    const id = `random-${Date.now()}`;
+    const surnames = [
+        'González',
+        'Pérez',
+        'Sánchez',
+        'Ramírez',
+        'Flores',
+        'Cruz',
+    ];
+    const maleNames = ['Juan', 'Carlos', 'Luis', 'Miguel', 'Pedro', 'José'];
+    const femaleNames = ['María', 'Ana', 'Carmen', 'Rosa', 'Elena', 'Isabel'];
+
+    const surname = surnames[Math.floor(Math.random() * surnames.length)];
+    const fatherName = maleNames[Math.floor(Math.random() * maleNames.length)];
+    const motherName =
+        femaleNames[Math.floor(Math.random() * femaleNames.length)];
+
+    const members: FamilyMember[] = [
+        {
+            id: `${id}-father`,
+            name: `${fatherName} ${surname}`,
+            age: 35 + Math.floor(Math.random() * 15),
+            gender: 'male',
+            occupation: 'Trabajador',
+            traits: ['responsable', 'trabajador'],
+        },
+        {
+            id: `${id}-mother`,
+            name: `${motherName} ${surname}`,
+            age: 30 + Math.floor(Math.random() * 15),
+            gender: 'female',
+            occupation: 'Trabajadora',
+            traits: ['cariñosa', 'organizada'],
+        },
+    ];
+
+    const numChildren = 1 + Math.floor(Math.random() * 3); // 1-3 hijos
+
+    for (let i = 0; i < numChildren; i++) {
+        const isGirl = Math.random() > 0.5;
+        const childNames = isGirl ? femaleNames : maleNames;
+        const childName =
+            childNames[Math.floor(Math.random() * childNames.length)];
+
+        members.push({
+            id: `${id}-child-${i + 1}`,
+            name: `${childName} ${surname}`,
+            age: 5 + Math.floor(Math.random() * 15),
+            gender: isGirl ? 'female' : 'male',
+            occupation: 'Estudiante',
+            traits: ['estudioso', 'alegre'],
         });
     }
 
-    return families;
-};
+    const relationships: Relationship[] = [
+        {
+            id: `${id}-rel-1`,
+            person1Id: `${id}-father`,
+            person2Id: `${id}-mother`,
+            type: 'spouse',
+            strength: 0.8 + Math.random() * 0.2,
+            description: 'Matrimonio',
+        },
+    ];
 
-// Combinar todas las familias
-const COMPLETE_FAMILIES = [
-    ...ALL_FAMILIES,
-    ...ADDITIONAL_FAMILIES,
-    ...generateAdditionalFamilies(),
-];
+    // Agregar relaciones padre-hijo y madre-hijo
+    for (let i = 0; i < numChildren; i++) {
+        relationships.push(
+            {
+                id: `${id}-rel-father-${i + 1}`,
+                person1Id: `${id}-father`,
+                person2Id: `${id}-child-${i + 1}`,
+                type: 'parent',
+                strength: 0.7 + Math.random() * 0.3,
+                description: 'Relación padre-hijo',
+            },
+            {
+                id: `${id}-rel-mother-${i + 1}`,
+                person1Id: `${id}-mother`,
+                person2Id: `${id}-child-${i + 1}`,
+                type: 'parent',
+                strength: 0.7 + Math.random() * 0.3,
+                description: 'Relación madre-hijo',
+            }
+        );
+    }
 
-export const FAMILY_DATASET: FamilyDataset = {
-    families: COMPLETE_FAMILIES,
-    totalMembers: COMPLETE_FAMILIES.reduce(
-        (sum, family) => sum + family.members.length,
-        0
-    ),
-    averageComplexity:
-        COMPLETE_FAMILIES.filter((f) => f.complexity === 'intermediate')
-            .length / COMPLETE_FAMILIES.length,
-    availablePatterns: [
-        'linear_sum',
-        'age_difference',
-        'generation_pattern',
-        'sibling_groups',
-        'parent_child_ratio',
-        'gender_distribution',
-        'marriage_patterns',
-        'extended_family',
-        'arithmetic_progression',
-        'geometric_progression',
-        'mathematical_sequence',
-    ],
-};
+    // Agregar relaciones entre hermanos
+    for (let i = 0; i < numChildren - 1; i++) {
+        for (let j = i + 1; j < numChildren; j++) {
+            relationships.push({
+                id: `${id}-rel-sibling-${i + 1}-${j + 1}`,
+                person1Id: `${id}-child-${i + 1}`,
+                person2Id: `${id}-child-${j + 1}`,
+                type: 'sibling',
+                strength: 0.6 + Math.random() * 0.4,
+                description: 'Hermanos',
+            });
+        }
+    }
 
-export const getFamiliesByComplexity = (
-    complexity: 'basic' | 'intermediate' | 'advanced'
-) => {
-    return COMPLETE_FAMILIES.filter(
-        (family) => family.complexity === complexity
-    );
-};
+    return {
+        id,
+        name: `Familia ${surname}`,
+        description: `Familia generada aleatoriamente con ${numChildren} hijo(s)`,
+        members,
+        relationships,
+        metadata: {
+            createdAt: new Date(),
+            lastUpdated: new Date(),
+            version: '1.0.0',
+            tags: ['generada', 'simple', 'aleatoria'],
+            complexity: 'simple',
+            educationalLevel: 'básico',
+        },
+    };
+}
 
-export const getFamilyById = (id: string) => {
-    return COMPLETE_FAMILIES.find((family) => family.id === id);
-};
+// ============================================================================
+// EXPORTACIONES PRINCIPALES
+// ============================================================================
 
-export const getRandomFamily = () => {
-    const randomIndex = Math.floor(Math.random() * COMPLETE_FAMILIES.length);
-    return COMPLETE_FAMILIES[randomIndex];
-};
-
-export const getFamiliesByPattern = (pattern: string) => {
-    return COMPLETE_FAMILIES.filter((family) =>
-        family.suggestedPatterns.includes(pattern)
-    );
-};
-
-export { COMPLETE_FAMILIES as ALL_FAMILIES };
-export default FAMILY_DATASET;
+export default ALL_FAMILIES;

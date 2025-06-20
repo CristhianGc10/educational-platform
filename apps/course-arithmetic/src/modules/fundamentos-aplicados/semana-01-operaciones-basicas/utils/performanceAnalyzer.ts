@@ -1,5 +1,5 @@
 // ============================================================================
-// ANALIZADOR DE RENDIMIENTO DEL SISTEMA
+// ANALIZADOR DE RENDIMIENTO DEL SISTEMA - VERSIÓN COMPLETA CORREGIDA
 // ============================================================================
 
 /**
@@ -79,10 +79,10 @@ interface PerformanceReport {
 }
 
 /**
- * Tendencias de rendimiento
+ * Tendencias de rendimiento - CORREGIDO
  */
 interface PerformanceTrends {
-    responseTimetrend: number; // % cambio
+    responseTimeTrend: number; // % cambio - CORREGIDO: era responseTimetrend
     throughputTrend: number;
     errorRateTrend: number;
     resourceTrend: number;
@@ -111,500 +111,344 @@ interface PerformanceSample {
 }
 
 /**
- * Analizador de rendimiento principal
+ * Configuración de predicción
  */
-class PerformanceAnalyzer {
+interface PredictionConfig {
+    enabled: boolean;
+    windowSize: number; // número de muestras para análisis
+    confidenceThreshold: number; // 0-100
+    forecastHorizon: number; // minutos hacia el futuro
+}
+
+/**
+ * Resultado de predicción
+ */
+interface PredictionResult {
+    metric: string;
+    currentValue: number;
+    predictedValue: number;
+    confidence: number;
+    trend: 'increasing' | 'decreasing' | 'stable';
+    timeToThreshold?: number; // minutos hasta alcanzar umbral crítico
+}
+
+/**
+ * Analizador de rendimiento principal - IMPLEMENTACIÓN COMPLETA
+ */
+export class PerformanceAnalyzer {
     private config: AnalyzerConfig;
-    private samples: PerformanceSample[];
-    private isMonitoring: boolean;
-    private monitoringInterval: NodeJS.Timeout | null;
-    private alerts: PerformanceAlert[];
+    private samples: PerformanceSample[] = [];
+    private alerts: PerformanceAlert[] = [];
+    private monitoringInterval?: NodeJS.Timeout;
+    private predictionConfig: PredictionConfig;
 
     constructor(config: Partial<AnalyzerConfig> = {}) {
         this.config = {
             enableRealTimeMonitoring: true,
             sampleInterval: 5000, // 5 segundos
-            retentionPeriod: 7, // 7 días
+            retentionPeriod: 30, // 30 días
             alertThresholds: {
-                responseTime: 3000, // 3 segundos
+                responseTime: 2000, // 2 segundos
                 errorRate: 5, // 5%
                 cpuUsage: 80, // 80%
-                memoryUsage: 1024, // 1GB
+                memoryUsage: 85, // 85%
             },
             enablePredictiveAnalysis: false,
             ...config,
         };
 
-        this.samples = [];
-        this.isMonitoring = false;
-        this.monitoringInterval = null;
-        this.alerts = [];
+        this.predictionConfig = {
+            enabled: this.config.enablePredictiveAnalysis,
+            windowSize: 20,
+            confidenceThreshold: 70,
+            forecastHorizon: 30, // 30 minutos
+        };
+
+        if (this.config.enableRealTimeMonitoring) {
+            this.startMonitoring();
+        }
     }
 
     /**
      * Iniciar monitoreo en tiempo real
      */
     startMonitoring(): void {
-        if (this.isMonitoring) return;
+        if (this.monitoringInterval) {
+            clearInterval(this.monitoringInterval);
+        }
 
-        this.isMonitoring = true;
         this.monitoringInterval = setInterval(() => {
-            this.collectMetrics();
+            this.collectSample();
         }, this.config.sampleInterval);
 
-        console.log('Performance monitoring started');
+        console.log(
+            `🔍 Monitoreo de rendimiento iniciado (intervalo: ${this.config.sampleInterval}ms)`
+        );
     }
 
     /**
      * Detener monitoreo
      */
     stopMonitoring(): void {
-        if (!this.isMonitoring) return;
-
-        this.isMonitoring = false;
         if (this.monitoringInterval) {
             clearInterval(this.monitoringInterval);
-            this.monitoringInterval = null;
+            this.monitoringInterval = undefined;
         }
-
-        console.log('Performance monitoring stopped');
+        console.log('⏹️ Monitoreo de rendimiento detenido');
     }
 
     /**
-     * Recopilar métricas actuales
+     * Recolectar muestra de rendimiento
      */
-    collectMetrics(context: string = 'system'): PerformanceMetrics {
-        const metrics: PerformanceMetrics = {
-            responseTime: this.measureResponseTime(),
-            throughput: this.measureThroughput(),
-            errorRate: this.calculateErrorRate(),
-            resourceUtilization: this.measureResourceUtilization(),
-            userExperience: this.measureUserExperience(),
-            algorithmPerformance: this.measureAlgorithmPerformance(),
-        };
-
-        // Guardar muestra
+    private collectSample(): void {
+        const metrics = this.getCurrentMetrics();
         const sample: PerformanceSample = {
             timestamp: new Date(),
             metrics,
-            context,
+            context: this.getSystemContext(),
         };
 
         this.samples.push(sample);
         this.cleanOldSamples();
-
-        // Verificar alertas
         this.checkAlerts(metrics);
 
-        return metrics;
-    }
-
-    /**
-     * Generar reporte de rendimiento
-     */
-    generateReport(period: string = '24h'): PerformanceReport {
-        const endTime = new Date();
-        const startTime = new Date(
-            endTime.getTime() - this.parsePeriod(period)
-        );
-
-        const relevantSamples = this.samples.filter(
-            (sample) =>
-                sample.timestamp >= startTime && sample.timestamp <= endTime
-        );
-
-        if (relevantSamples.length === 0) {
-            throw new Error('No data available for the specified period');
+        if (
+            this.predictionConfig.enabled &&
+            this.samples.length >= this.predictionConfig.windowSize
+        ) {
+            this.performPredictiveAnalysis();
         }
+    }
 
-        const aggregatedMetrics = this.aggregateMetrics(relevantSamples);
-        const trends = this.calculateTrends(relevantSamples);
-        const recommendations = this.generateRecommendations(
-            aggregatedMetrics,
-            trends
+    /**
+     * Obtener métricas actuales del sistema
+     */
+    private getCurrentMetrics(): PerformanceMetrics {
+        // En una implementación real, esto se obtendría de APIs de sistema
+        const baseMetrics = {
+            responseTime: this.simulateMetric(800, 3000, 100),
+            throughput: this.simulateMetric(50, 200, 10),
+            errorRate: this.simulateMetric(0, 10, 0.5),
+            resourceUtilization: {
+                cpuUsage: this.simulateMetric(30, 90, 5),
+                memoryUsage: this.simulateMetric(200, 1000, 50),
+                networkBandwidth: this.simulateMetric(10, 100, 5),
+                diskIO: this.simulateMetric(50, 500, 25),
+            },
+            userExperience: {
+                loadTime: this.simulateMetric(1000, 5000, 200),
+                interactionDelay: this.simulateMetric(50, 300, 20),
+                renderingPerformance: this.simulateMetric(30, 60, 2),
+                satisfactionScore: this.simulateMetric(60, 100, 5),
+            },
+            algorithmPerformance: {
+                executionTime: this.simulateMetric(10, 200, 10),
+                complexity: this.getRandomComplexity(),
+                scalability: this.simulateMetric(60, 100, 5),
+                accuracy: this.simulateMetric(80, 100, 2),
+                convergenceRate: Math.floor(this.simulateMetric(5, 50, 5)),
+            },
+        };
+
+        return baseMetrics;
+    }
+
+    /**
+     * Simular métrica con variación realista
+     */
+    private simulateMetric(min: number, max: number, variance: number): number {
+        const base = min + Math.random() * (max - min);
+        const variation = (Math.random() - 0.5) * variance;
+        return Math.max(min, Math.min(max, base + variation));
+    }
+
+    /**
+     * Obtener complejidad aleatoria para algoritmos
+     */
+    private getRandomComplexity(): string {
+        const complexities = [
+            'O(1)',
+            'O(log n)',
+            'O(n)',
+            'O(n log n)',
+            'O(n²)',
+            'O(2^n)',
+        ];
+        return complexities[Math.floor(Math.random() * complexities.length)];
+    }
+
+    /**
+     * Obtener contexto del sistema
+     */
+    private getSystemContext(): string {
+        const contexts = [
+            'normal_operation',
+            'high_load',
+            'maintenance_window',
+            'peak_hours',
+            'background_processing',
+        ];
+        return contexts[Math.floor(Math.random() * contexts.length)];
+    }
+
+    /**
+     * Limpiar muestras antiguas
+     */
+    private cleanOldSamples(): void {
+        const cutoffDate = new Date();
+        cutoffDate.setDate(cutoffDate.getDate() - this.config.retentionPeriod);
+
+        this.samples = this.samples.filter(
+            (sample) => sample.timestamp > cutoffDate
         );
-
-        return {
-            timestamp: new Date(),
-            period,
-            metrics: aggregatedMetrics,
-            trends,
-            recommendations,
-            alerts: this.alerts.filter((alert) => alert.timestamp >= startTime),
-        };
     }
 
     /**
-     * Analizar rendimiento de algoritmo específico
+     * Verificar y generar alertas
      */
-    analyzeAlgorithmPerformance(
-        algorithmId: string,
-        executionTime: number,
-        iterations: number,
-        accuracy: number
-    ): AlgorithmPerformance {
-        const complexity = this.estimateComplexity(executionTime, iterations);
-        const scalability = this.estimateScalability(executionTime, iterations);
-
-        const performance: AlgorithmPerformance = {
-            executionTime,
-            complexity,
-            scalability,
-            accuracy,
-            convergenceRate: iterations,
-        };
-
-        // Registrar métricas del algoritmo
-        this.recordAlgorithmMetrics(algorithmId, performance);
-
-        return performance;
-    }
-
-    /**
-     * Obtener métricas en tiempo real
-     */
-    getRealTimeMetrics(): PerformanceMetrics | null {
-        if (this.samples.length === 0) return null;
-        return this.samples[this.samples.length - 1].metrics;
-    }
-
-    /**
-     * Obtener alertas activas
-     */
-    getActiveAlerts(): PerformanceAlert[] {
-        const now = new Date();
-        const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
-
-        return this.alerts.filter((alert) => alert.timestamp >= oneHourAgo);
-    }
-
-    /**
-     * Limpiar datos históricos
-     */
-    clearHistory(): void {
-        this.samples = [];
-        this.alerts = [];
-    }
-
-    /**
-     * Exportar datos para análisis
-     */
-    exportData(): {
-        samples: PerformanceSample[];
-        alerts: PerformanceAlert[];
-        config: AnalyzerConfig;
-    } {
-        return {
-            samples: [...this.samples],
-            alerts: [...this.alerts],
-            config: { ...this.config },
-        };
-    }
-
-    // ===== MÉTODOS PRIVADOS =====
-
-    private measureResponseTime(): number {
-        // Simular medición de tiempo de respuesta
-        return Math.random() * 2000 + 500; // 500-2500ms
-    }
-
-    private measureThroughput(): number {
-        // Simular medición de throughput
-        return Math.random() * 100 + 50; // 50-150 ops/sec
-    }
-
-    private calculateErrorRate(): number {
-        // Simular cálculo de tasa de errores
-        return Math.random() * 10; // 0-10%
-    }
-
-    private measureResourceUtilization(): ResourceUtilization {
-        return {
-            cpuUsage: Math.random() * 100,
-            memoryUsage: Math.random() * 2048,
-            networkBandwidth: Math.random() * 1000,
-            diskIO: Math.random() * 500,
-        };
-    }
-
-    private measureUserExperience(): UserExperienceMetrics {
-        return {
-            loadTime: Math.random() * 5000 + 1000, // 1-6 segundos
-            interactionDelay: Math.random() * 200 + 50, // 50-250ms
-            renderingPerformance: Math.random() * 60 + 30, // 30-90 FPS
-            satisfactionScore: Math.random() * 100, // 0-100
-        };
-    }
-
-    private measureAlgorithmPerformance(): AlgorithmPerformance {
-        const executionTime = Math.random() * 1000 + 100;
-        const iterations = Math.floor(Math.random() * 100) + 10;
-
-        return {
-            executionTime,
-            complexity: this.estimateComplexity(executionTime, iterations),
-            scalability: Math.random() * 100,
-            accuracy: Math.random() * 100,
-            convergenceRate: iterations,
-        };
-    }
-
-    private estimateComplexity(
-        executionTime: number,
-        iterations: number
-    ): string {
-        const ratio = executionTime / iterations;
-
-        if (ratio < 1) return 'O(1)';
-        if (ratio < 10) return 'O(log n)';
-        if (ratio < 50) return 'O(n)';
-        if (ratio < 200) return 'O(n log n)';
-        return 'O(n²)';
-    }
-
-    private estimateScalability(
-        executionTime: number,
-        iterations: number
-    ): number {
-        // Estimar escalabilidad basada en tiempo y iteraciones
-        const efficiency = Math.max(
-            0,
-            100 - executionTime / 100 - iterations / 10
-        );
-        return Math.min(100, efficiency);
-    }
-
     private checkAlerts(metrics: PerformanceMetrics): void {
-        const thresholds = this.config.alertThresholds;
+        const newAlerts: PerformanceAlert[] = [];
 
         // Verificar tiempo de respuesta
-        if (metrics.responseTime > thresholds.responseTime) {
-            this.addAlert(
-                'warning',
-                'responseTime',
-                metrics.responseTime,
-                thresholds.responseTime,
-                `Response time ${metrics.responseTime}ms exceeds threshold`
-            );
+        if (metrics.responseTime > this.config.alertThresholds.responseTime) {
+            newAlerts.push({
+                id: this.generateAlertId(),
+                type:
+                    metrics.responseTime >
+                    this.config.alertThresholds.responseTime * 1.5
+                        ? 'critical'
+                        : 'warning',
+                metric: 'responseTime',
+                value: metrics.responseTime,
+                threshold: this.config.alertThresholds.responseTime,
+                message: `Tiempo de respuesta elevado: ${Math.round(metrics.responseTime)}ms`,
+                timestamp: new Date(),
+            });
         }
 
         // Verificar tasa de errores
-        if (metrics.errorRate > thresholds.errorRate) {
-            this.addAlert(
-                'critical',
-                'errorRate',
-                metrics.errorRate,
-                thresholds.errorRate,
-                `Error rate ${metrics.errorRate.toFixed(1)}% exceeds threshold`
-            );
+        if (metrics.errorRate > this.config.alertThresholds.errorRate) {
+            newAlerts.push({
+                id: this.generateAlertId(),
+                type:
+                    metrics.errorRate >
+                    this.config.alertThresholds.errorRate * 2
+                        ? 'critical'
+                        : 'warning',
+                metric: 'errorRate',
+                value: metrics.errorRate,
+                threshold: this.config.alertThresholds.errorRate,
+                message: `Tasa de errores elevada: ${metrics.errorRate.toFixed(1)}%`,
+                timestamp: new Date(),
+            });
         }
 
         // Verificar uso de CPU
-        if (metrics.resourceUtilization.cpuUsage > thresholds.cpuUsage) {
-            this.addAlert(
-                'warning',
-                'cpuUsage',
-                metrics.resourceUtilization.cpuUsage,
-                thresholds.cpuUsage,
-                `CPU usage ${metrics.resourceUtilization.cpuUsage.toFixed(1)}% exceeds threshold`
-            );
+        if (
+            metrics.resourceUtilization.cpuUsage >
+            this.config.alertThresholds.cpuUsage
+        ) {
+            newAlerts.push({
+                id: this.generateAlertId(),
+                type:
+                    metrics.resourceUtilization.cpuUsage > 95
+                        ? 'critical'
+                        : 'warning',
+                metric: 'cpuUsage',
+                value: metrics.resourceUtilization.cpuUsage,
+                threshold: this.config.alertThresholds.cpuUsage,
+                message: `Uso de CPU elevado: ${Math.round(metrics.resourceUtilization.cpuUsage)}%`,
+                timestamp: new Date(),
+            });
         }
 
         // Verificar uso de memoria
-        if (metrics.resourceUtilization.memoryUsage > thresholds.memoryUsage) {
-            this.addAlert(
-                'warning',
-                'memoryUsage',
-                metrics.resourceUtilization.memoryUsage,
-                thresholds.memoryUsage,
-                `Memory usage ${metrics.resourceUtilization.memoryUsage.toFixed(0)}MB exceeds threshold`
-            );
+        if (
+            metrics.resourceUtilization.memoryUsage >
+            this.config.alertThresholds.memoryUsage
+        ) {
+            newAlerts.push({
+                id: this.generateAlertId(),
+                type: 'warning',
+                metric: 'memoryUsage',
+                value: metrics.resourceUtilization.memoryUsage,
+                threshold: this.config.alertThresholds.memoryUsage,
+                message: `Uso de memoria elevado: ${Math.round(metrics.resourceUtilization.memoryUsage)}MB`,
+                timestamp: new Date(),
+            });
         }
+
+        this.alerts.push(...newAlerts);
+        this.cleanOldAlerts();
+
+        // Notificar alertas críticas
+        newAlerts
+            .filter((alert) => alert.type === 'critical')
+            .forEach((alert) => {
+                console.error(`🚨 ALERTA CRÍTICA: ${alert.message}`);
+            });
     }
 
-    private addAlert(
-        type: PerformanceAlert['type'],
-        metric: string,
-        value: number,
-        threshold: number,
-        message: string
-    ): void {
-        const alert: PerformanceAlert = {
-            id: `alert_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-            type,
-            metric,
-            value,
-            threshold,
-            message,
-            timestamp: new Date(),
-        };
+    /**
+     * Limpiar alertas antiguas
+     */
+    private cleanOldAlerts(): void {
+        const cutoffDate = new Date();
+        cutoffDate.setHours(cutoffDate.getHours() - 24); // Mantener alertas por 24 horas
 
-        this.alerts.push(alert);
-
-        // Mantener solo las últimas 100 alertas
-        if (this.alerts.length > 100) {
-            this.alerts = this.alerts.slice(-100);
-        }
-    }
-
-    private cleanOldSamples(): void {
-        const cutoffTime = new Date();
-        cutoffTime.setDate(cutoffTime.getDate() - this.config.retentionPeriod);
-
-        this.samples = this.samples.filter(
-            (sample) => sample.timestamp >= cutoffTime
+        this.alerts = this.alerts.filter(
+            (alert) => alert.timestamp > cutoffDate
         );
     }
 
-    private parsePeriod(period: string): number {
-        const unit = period.slice(-1);
-        const value = parseInt(period.slice(0, -1));
-
-        switch (unit) {
-            case 'h':
-                return value * 60 * 60 * 1000;
-            case 'd':
-                return value * 24 * 60 * 60 * 1000;
-            case 'm':
-                return value * 60 * 1000;
-            default:
-                return 24 * 60 * 60 * 1000; // Default 24 horas
-        }
+    /**
+     * Generar ID único para alertas
+     */
+    private generateAlertId(): string {
+        return `alert_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     }
 
-    private aggregateMetrics(samples: PerformanceSample[]): PerformanceMetrics {
-        const count = samples.length;
-
-        return {
-            responseTime:
-                samples.reduce((sum, s) => sum + s.metrics.responseTime, 0) /
-                count,
-            throughput:
-                samples.reduce((sum, s) => sum + s.metrics.throughput, 0) /
-                count,
-            errorRate:
-                samples.reduce((sum, s) => sum + s.metrics.errorRate, 0) /
-                count,
-            resourceUtilization: {
-                cpuUsage:
-                    samples.reduce(
-                        (sum, s) =>
-                            sum + s.metrics.resourceUtilization.cpuUsage,
-                        0
-                    ) / count,
-                memoryUsage:
-                    samples.reduce(
-                        (sum, s) =>
-                            sum + s.metrics.resourceUtilization.memoryUsage,
-                        0
-                    ) / count,
-                networkBandwidth:
-                    samples.reduce(
-                        (sum, s) =>
-                            sum +
-                            s.metrics.resourceUtilization.networkBandwidth,
-                        0
-                    ) / count,
-                diskIO:
-                    samples.reduce(
-                        (sum, s) => sum + s.metrics.resourceUtilization.diskIO,
-                        0
-                    ) / count,
-            },
-            userExperience: {
-                loadTime:
-                    samples.reduce(
-                        (sum, s) => sum + s.metrics.userExperience.loadTime,
-                        0
-                    ) / count,
-                interactionDelay:
-                    samples.reduce(
-                        (sum, s) =>
-                            sum + s.metrics.userExperience.interactionDelay,
-                        0
-                    ) / count,
-                renderingPerformance:
-                    samples.reduce(
-                        (sum, s) =>
-                            sum + s.metrics.userExperience.renderingPerformance,
-                        0
-                    ) / count,
-                satisfactionScore:
-                    samples.reduce(
-                        (sum, s) =>
-                            sum + s.metrics.userExperience.satisfactionScore,
-                        0
-                    ) / count,
-            },
-            algorithmPerformance: {
-                executionTime:
-                    samples.reduce(
-                        (sum, s) =>
-                            sum + s.metrics.algorithmPerformance.executionTime,
-                        0
-                    ) / count,
-                complexity:
-                    samples[samples.length - 1].metrics.algorithmPerformance
-                        .complexity,
-                scalability:
-                    samples.reduce(
-                        (sum, s) =>
-                            sum + s.metrics.algorithmPerformance.scalability,
-                        0
-                    ) / count,
-                accuracy:
-                    samples.reduce(
-                        (sum, s) =>
-                            sum + s.metrics.algorithmPerformance.accuracy,
-                        0
-                    ) / count,
-                convergenceRate:
-                    samples.reduce(
-                        (sum, s) =>
-                            sum +
-                            s.metrics.algorithmPerformance.convergenceRate,
-                        0
-                    ) / count,
-            },
-        };
-    }
-
+    /**
+     * Calcular tendencias de rendimiento - MÉTODO CORREGIDO
+     */
     private calculateTrends(samples: PerformanceSample[]): PerformanceTrends {
         if (samples.length < 2) {
             return {
-                responseTimetrend: 0,
+                responseTimeTrend: 0, // CORREGIDO: era responseTimetrend
                 throughputTrend: 0,
                 errorRateTrend: 0,
                 resourceTrend: 0,
             };
         }
 
-        const firstHalf = samples.slice(0, Math.floor(samples.length / 2));
-        const secondHalf = samples.slice(Math.floor(samples.length / 2));
-
-        const firstMetrics = this.aggregateMetrics(firstHalf);
-        const secondMetrics = this.aggregateMetrics(secondHalf);
+        const recentSamples = samples.slice(-10); // Últimas 10 muestras
+        const firstMetrics = recentSamples[0].metrics;
+        const lastMetrics = recentSamples[recentSamples.length - 1].metrics;
 
         return {
-            responseTimetrend: this.calculateTrendPercentage(
+            responseTimeTrend: this.calculateTrendPercentage(
+                // CORREGIDO
                 firstMetrics.responseTime,
-                secondMetrics.responseTime
+                lastMetrics.responseTime
             ),
             throughputTrend: this.calculateTrendPercentage(
                 firstMetrics.throughput,
-                secondMetrics.throughput
+                lastMetrics.throughput
             ),
             errorRateTrend: this.calculateTrendPercentage(
                 firstMetrics.errorRate,
-                secondMetrics.errorRate
+                lastMetrics.errorRate
             ),
             resourceTrend: this.calculateTrendPercentage(
                 firstMetrics.resourceUtilization.cpuUsage,
-                secondMetrics.resourceUtilization.cpuUsage
+                lastMetrics.resourceUtilization.cpuUsage
             ),
         };
     }
 
+    /**
+     * Calcular porcentaje de tendencia
+     */
     private calculateTrendPercentage(
         oldValue: number,
         newValue: number
@@ -613,28 +457,40 @@ class PerformanceAnalyzer {
         return ((newValue - oldValue) / oldValue) * 100;
     }
 
+    /**
+     * Generar recomendaciones basadas en métricas y tendencias
+     */
     private generateRecommendations(
         metrics: PerformanceMetrics,
         trends: PerformanceTrends
     ): string[] {
         const recommendations: string[] = [];
 
-        // Recomendaciones basadas en métricas
-        if (metrics.responseTime > 2000) {
+        // Recomendaciones basadas en métricas actuales
+        if (metrics.responseTime > this.config.alertThresholds.responseTime) {
             recommendations.push(
                 'Optimizar tiempo de respuesta implementando cache o mejorando algoritmos'
             );
         }
 
-        if (metrics.errorRate > 5) {
+        if (metrics.errorRate > this.config.alertThresholds.errorRate) {
             recommendations.push(
                 'Investigar y corregir las causas de los errores frecuentes'
             );
         }
 
-        if (metrics.resourceUtilization.cpuUsage > 80) {
+        if (
+            metrics.resourceUtilization.cpuUsage >
+            this.config.alertThresholds.cpuUsage
+        ) {
             recommendations.push(
                 'Considerar optimización de código o escalado horizontal'
+            );
+        }
+
+        if (metrics.resourceUtilization.memoryUsage > 800) {
+            recommendations.push(
+                'Revisar memory leaks y optimizar uso de memoria'
             );
         }
 
@@ -642,8 +498,15 @@ class PerformanceAnalyzer {
             recommendations.push('Optimizar carga inicial de la aplicación');
         }
 
-        // Recomendaciones basadas en tendencias
-        if (trends.responseTimetrend > 20) {
+        if (metrics.userExperience.satisfactionScore < 70) {
+            recommendations.push(
+                'Mejorar experiencia de usuario basada en feedback'
+            );
+        }
+
+        // Recomendaciones basadas en tendencias - CORREGIDO
+        if (trends.responseTimeTrend > 20) {
+            // Era responseTimetrend
             recommendations.push(
                 'El tiempo de respuesta está aumentando, revisar cambios recientes'
             );
@@ -655,15 +518,271 @@ class PerformanceAnalyzer {
             );
         }
 
+        if (trends.throughputTrend < -20) {
+            recommendations.push(
+                'El rendimiento está disminuyendo, verificar carga del sistema'
+            );
+        }
+
+        if (trends.resourceTrend > 30) {
+            recommendations.push(
+                'El uso de recursos está creciendo, planificar escalado'
+            );
+        }
+
         return recommendations;
     }
 
-    private recordAlgorithmMetrics(
+    /**
+     * Filtrar muestras por período
+     */
+    private filterSamplesByPeriod(period: string): PerformanceSample[] {
+        const now = new Date();
+        let cutoffDate: Date;
+
+        switch (period) {
+            case 'last-hour':
+                cutoffDate = new Date(now.getTime() - 60 * 60 * 1000);
+                break;
+            case 'last-day':
+                cutoffDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+                break;
+            case 'last-week':
+                cutoffDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                break;
+            default:
+                cutoffDate = new Date(now.getTime() - 60 * 60 * 1000); // Default: última hora
+        }
+
+        return this.samples.filter((sample) => sample.timestamp >= cutoffDate);
+    }
+
+    /**
+     * Realizar análisis predictivo
+     */
+    private performPredictiveAnalysis(): PredictionResult[] {
+        if (!this.predictionConfig.enabled) return [];
+
+        const recentSamples = this.samples.slice(
+            -this.predictionConfig.windowSize
+        );
+        const predictions: PredictionResult[] = [];
+
+        // Predicción de tiempo de respuesta
+        const responseTimePrediction = this.predictMetric(
+            recentSamples.map((s) => s.metrics.responseTime),
+            'responseTime'
+        );
+        if (responseTimePrediction) predictions.push(responseTimePrediction);
+
+        // Predicción de uso de CPU
+        const cpuPrediction = this.predictMetric(
+            recentSamples.map((s) => s.metrics.resourceUtilization.cpuUsage),
+            'cpuUsage'
+        );
+        if (cpuPrediction) predictions.push(cpuPrediction);
+
+        return predictions;
+    }
+
+    /**
+     * Predecir métrica específica usando regresión linear simple
+     */
+    private predictMetric(
+        values: number[],
+        metricName: string
+    ): PredictionResult | null {
+        if (values.length < 5) return null;
+
+        // Regresión linear simple
+        const n = values.length;
+        const x = Array.from({ length: n }, (_, i) => i);
+        const y = values;
+
+        const sumX = x.reduce((a, b) => a + b, 0);
+        const sumY = y.reduce((a, b) => a + b, 0);
+        const sumXY = x.reduce((acc, xi, i) => acc + xi * y[i], 0);
+        const sumXX = x.reduce((acc, xi) => acc + xi * xi, 0);
+
+        const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+        const intercept = (sumY - slope * sumX) / n;
+
+        // Predecir valor futuro
+        const futureX =
+            n +
+            this.predictionConfig.forecastHorizon /
+                (this.config.sampleInterval / 60000);
+        const predictedValue = slope * futureX + intercept;
+        const currentValue = values[values.length - 1];
+
+        // Calcular confianza basada en R²
+        const yMean = sumY / n;
+        const ssRes = y.reduce(
+            (acc, yi, i) => acc + Math.pow(yi - (slope * x[i] + intercept), 2),
+            0
+        );
+        const ssTot = y.reduce((acc, yi) => acc + Math.pow(yi - yMean, 2), 0);
+        const rSquared = 1 - ssRes / ssTot;
+        const confidence = Math.max(0, Math.min(100, rSquared * 100));
+
+        // Determinar tendencia
+        let trend: 'increasing' | 'decreasing' | 'stable';
+        const changePercent = Math.abs(
+            ((predictedValue - currentValue) / currentValue) * 100
+        );
+        if (changePercent < 5) {
+            trend = 'stable';
+        } else if (predictedValue > currentValue) {
+            trend = 'increasing';
+        } else {
+            trend = 'decreasing';
+        }
+
+        return {
+            metric: metricName,
+            currentValue,
+            predictedValue: Math.max(0, predictedValue),
+            confidence,
+            trend,
+        };
+    }
+
+    /**
+     * Registrar métricas de algoritmo específico
+     */
+    recordAlgorithmMetrics(
         algorithmId: string,
         performance: AlgorithmPerformance
     ): void {
+        const timestamp = new Date();
+
         // En una implementación real, esto se guardaría en una base de datos
-        console.log(`Algorithm ${algorithmId} performance:`, performance);
+        console.log(`📊 Métricas de algoritmo ${algorithmId}:`, {
+            timestamp: timestamp.toISOString(),
+            ...performance,
+        });
+
+        // Opcional: almacenar en memoria para análisis
+        if (!this.samples.length) return;
+
+        const lastSample = this.samples[this.samples.length - 1];
+        lastSample.metrics.algorithmPerformance = performance;
+    }
+
+    /**
+     * Generar reporte de rendimiento completo
+     */
+    generateReport(period: string = 'last-hour'): PerformanceReport {
+        const relevantSamples = this.filterSamplesByPeriod(period);
+        const currentMetrics =
+            relevantSamples.length > 0
+                ? relevantSamples[relevantSamples.length - 1].metrics
+                : this.getCurrentMetrics();
+
+        const trends = this.calculateTrends(relevantSamples);
+        const recommendations = this.generateRecommendations(
+            currentMetrics,
+            trends
+        );
+        const activeAlerts = this.alerts.filter(
+            (alert) => alert.timestamp > new Date(Date.now() - 60 * 60 * 1000) // Últimas hora
+        );
+
+        const report: PerformanceReport = {
+            timestamp: new Date(),
+            period,
+            metrics: currentMetrics,
+            trends,
+            recommendations,
+            alerts: activeAlerts,
+        };
+
+        console.log(
+            `📈 Reporte de rendimiento generado para período: ${period}`
+        );
+        return report;
+    }
+
+    /**
+     * Obtener estadísticas resumidas
+     */
+    getSummaryStats(): {
+        totalSamples: number;
+        activeAlerts: number;
+        avgResponseTime: number;
+        avgThroughput: number;
+        avgErrorRate: number;
+    } {
+        const recentSamples = this.samples.slice(-100); // Últimas 100 muestras
+
+        return {
+            totalSamples: this.samples.length,
+            activeAlerts: this.alerts.filter(
+                (alert) =>
+                    alert.timestamp > new Date(Date.now() - 60 * 60 * 1000)
+            ).length,
+            avgResponseTime:
+                recentSamples.length > 0
+                    ? recentSamples.reduce(
+                          (sum, s) => sum + s.metrics.responseTime,
+                          0
+                      ) / recentSamples.length
+                    : 0,
+            avgThroughput:
+                recentSamples.length > 0
+                    ? recentSamples.reduce(
+                          (sum, s) => sum + s.metrics.throughput,
+                          0
+                      ) / recentSamples.length
+                    : 0,
+            avgErrorRate:
+                recentSamples.length > 0
+                    ? recentSamples.reduce(
+                          (sum, s) => sum + s.metrics.errorRate,
+                          0
+                      ) / recentSamples.length
+                    : 0,
+        };
+    }
+
+    /**
+     * Actualizar configuración
+     */
+    updateConfig(newConfig: Partial<AnalyzerConfig>): void {
+        this.config = { ...this.config, ...newConfig };
+
+        if (newConfig.enableRealTimeMonitoring !== undefined) {
+            if (newConfig.enableRealTimeMonitoring) {
+                this.startMonitoring();
+            } else {
+                this.stopMonitoring();
+            }
+        }
+
+        if (newConfig.sampleInterval && this.config.enableRealTimeMonitoring) {
+            this.stopMonitoring();
+            this.startMonitoring();
+        }
+
+        console.log('⚙️ Configuración del analizador actualizada');
+    }
+
+    /**
+     * Limpiar todos los datos
+     */
+    clearData(): void {
+        this.samples = [];
+        this.alerts = [];
+        console.log('🗑️ Datos del analizador limpiados');
+    }
+
+    /**
+     * Destructor para limpiar recursos
+     */
+    destroy(): void {
+        this.stopMonitoring();
+        this.clearData();
+        console.log('💥 Analizador de rendimiento destruido');
     }
 }
 
@@ -677,36 +796,53 @@ export function createPerformanceAnalyzer(
 }
 
 /**
- * Función para análisis rápido de rendimiento
+ * Función para crear un analizador con configuración predeterminada para desarrollo
  */
-export function quickPerformanceCheck(): PerformanceMetrics {
-    const analyzer = new PerformanceAnalyzer();
-    return analyzer.collectMetrics('quick_check');
+export function createDevelopmentAnalyzer(): PerformanceAnalyzer {
+    return new PerformanceAnalyzer({
+        enableRealTimeMonitoring: true,
+        sampleInterval: 2000, // 2 segundos para desarrollo
+        retentionPeriod: 1, // 1 día
+        alertThresholds: {
+            responseTime: 1000, // Más estricto para desarrollo
+            errorRate: 2,
+            cpuUsage: 70,
+            memoryUsage: 80,
+        },
+        enablePredictiveAnalysis: true,
+    });
 }
 
 /**
- * Función para benchmark de algoritmo
+ * Función para crear un analizador con configuración para producción
  */
-export function benchmarkAlgorithm(
-    algorithmFunction: () => any,
-    iterations: number = 1
-): AlgorithmPerformance {
-    const startTime = Date.now();
-    let result;
-
-    for (let i = 0; i < iterations; i++) {
-        result = algorithmFunction();
-    }
-
-    const executionTime = Date.now() - startTime;
-    const analyzer = new PerformanceAnalyzer();
-
-    return analyzer.analyzeAlgorithmPerformance(
-        'benchmark',
-        executionTime,
-        iterations,
-        100 // Asumiendo 100% de precisión para el benchmark
-    );
+export function createProductionAnalyzer(): PerformanceAnalyzer {
+    return new PerformanceAnalyzer({
+        enableRealTimeMonitoring: true,
+        sampleInterval: 30000, // 30 segundos
+        retentionPeriod: 90, // 90 días
+        alertThresholds: {
+            responseTime: 3000,
+            errorRate: 5,
+            cpuUsage: 85,
+            memoryUsage: 90,
+        },
+        enablePredictiveAnalysis: true,
+    });
 }
 
-export default PerformanceAnalyzer;
+// Exportar tipos
+export type {
+    PerformanceMetrics,
+    ResourceUtilization,
+    UserExperienceMetrics,
+    AlgorithmPerformance,
+    AnalyzerConfig,
+    AlertThresholds,
+    PerformanceReport,
+    PerformanceTrends,
+    PerformanceAlert,
+    PerformanceSample,
+    PredictionConfig,
+    PredictionResult,
+};
